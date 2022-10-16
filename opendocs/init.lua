@@ -15,7 +15,21 @@ function M.open(bufnr)
   local supported = M.supported[lang]
 
   if supported then
-    supported().run(bufnr)
+    supported().open_doc(bufnr)
+  else
+    M.warn("Language '" .. lang .. "' is not supported")
+  end
+end
+
+function M.copy_ref(bufnr)
+  bufnr = bufnr or 0
+
+  local lang = parsers.get_buf_lang(bufnr)
+
+  local supported = M.supported[lang]
+
+  if supported then
+    supported().copy_ref(bufnr)
   else
     M.warn("Language '" .. lang .. "' is not supported")
   end

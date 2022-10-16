@@ -8,17 +8,19 @@ local M = {
 
 M.block_query = vim.treesitter.parse_query(
   M.lang,
+  -- @lang query
   [[
     (block (
       (identifier) @type
       (string_lit (template_literal) @resource)
-      (string_lit)
+      (string_lit (template_literal) @name)
     )) @root
   ]]
 )
 
 M.attribute_query = vim.treesitter.parse_query(
   M.lang,
+  -- @lang query
   [[
     [
       (block (
@@ -71,7 +73,36 @@ function M.get_block_and_attribute(cursor_node, bufnr)
   return block_node, attribute
 end
 
-function M.run(bufnr)
+function M.copy_ref(bufnr)
+  local cursor_node = ts_utils.get_node_at_cursor()
+
+  local block_node, attribute = M.get_block_and_attribute(cursor_node, bufnr)
+
+  if not block_node then
+    M.warn "Cannot find appropriate block to copy reference"
+
+    return
+  end
+
+  for _, match, _ in M.block_query:iter_matches(block_node, bufnr) do
+    local type = q.get_node_text(M.get_named_match(M.block_query, match, "type"), bufnr)
+    local full_resource = q.get_node_text(M.get_named_match(M.block_query, match, "resource"), bufnr)
+    local name = q.get_node_text(M.get_named_match(M.block_query, match, "name"), bufnr)
+
+    local result = {}
+
+    if type == "data" then table.insert(result, "data") end
+
+    table.insert(result, full_resource)
+    table.insert(result, name)
+
+    if attribute ~= "" then table.insert(result, attribute) end
+
+    vim.fn.setreg("+", vim.fn.join(result, "."))
+  end
+end
+
+function M.open_doc(bufnr)
   local cursor_node = ts_utils.get_node_at_cursor()
 
   local block_node, attribute = M.get_block_and_attribute(cursor_node, bufnr)
@@ -92,14 +123,13 @@ function M.run(bufnr)
     local type_url = "resources"
     if type == "data" then type_url = "data-sources" end
 
-    local url = "https://registry.terraform.io/providers/hashicorp/"
-      .. provider
-      .. "/latest/docs/"
-      .. type_url
-      .. "/"
-      .. resource
-      .. "#"
-      .. attribute
+    local url = string.format(
+      "https://registry.terraform.io/providers/hashicorp/%s/latest/docs/%s/%s#%s",
+      provider,
+      type_url,
+      resource,
+      attribute
+    )
 
     vim.fn.jobstart({ "xdg-open", url }, { detach = true })
   end

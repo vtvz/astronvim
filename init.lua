@@ -86,7 +86,9 @@ local config = {
         desc = "Copy current file relative path",
       },
       ["<CR>"] = { "o<Esc>", desc = "New line without entering insert" },
+
       ["gK"] = { function() require("user.opendocs").open() end, desc = "Open online documentation" },
+      ["yK"] = { function() require("user.opendocs").copy_ref() end, desc = "Copy reference" },
     },
   },
 
@@ -253,6 +255,7 @@ local config = {
         "toml",
         "tsx",
         "typescript",
+        "yaml",
       },
       incremental_selection = {
         enable = true,
@@ -293,6 +296,8 @@ local config = {
   },
 
   polish = function()
+    vim.opt.matchpairs:append { "<:>" }
+
     vim.api.nvim_create_user_command("Messages", function()
       local messages_output = vim.api.nvim_exec(":messages", true)
 
