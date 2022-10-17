@@ -1,10 +1,12 @@
 return function()
-  vim.opt.matchpairs:append { "<:>" }
+  vim.opt.matchpairs:append({ "<:>" })
 
   vim.api.nvim_create_user_command("Messages", function()
     local messages_output = vim.api.nvim_exec(":messages", true)
 
-    if MESSAGES_BUFNR ~= nil and vim.fn.buflisted(MESSAGES_BUFNR) == 0 then MESSAGES_BUFNR = nil end
+    if MESSAGES_BUFNR ~= nil and vim.fn.buflisted(MESSAGES_BUFNR) == 0 then
+      MESSAGES_BUFNR = nil
+    end
 
     if not MESSAGES_BUFNR then
       MESSAGES_BUFNR = vim.api.nvim_create_buf(true, true)
@@ -27,7 +29,7 @@ return function()
     group = au,
     callback = function()
       -- Remove trailing spaces
-      vim.api.nvim_command ":%s/\\s\\+$//e"
+      vim.api.nvim_command(":%s/\\s\\+$//e")
       -- Remove ending lines
       pcall(vim.api.nvim_command, ":%s#\\($\\n\\s*\\)\\+\\%$##")
     end,
@@ -38,7 +40,9 @@ return function()
 
     local _, err = pcall(vim.api.nvim_command, "Neotree action=show")
     if err then
-      vim.defer_fn(function() open_neotree(cur_win) end, 100)
+      vim.defer_fn(function()
+        open_neotree(cur_win)
+      end, 100)
 
       return
     else
@@ -51,7 +55,9 @@ return function()
     desc = "On launch",
     group = au,
     callback = function()
-      vim.defer_fn(function() open_neotree() end, 100)
+      vim.defer_fn(function()
+        open_neotree()
+      end, 100)
     end,
   })
 
@@ -87,7 +93,9 @@ return function()
     pattern = "SessionLoadPost",
     group = au,
     callback = function()
-      vim.defer_fn(function() open_neotree() end, 100)
+      vim.defer_fn(function()
+        open_neotree()
+      end, 100)
     end,
   })
 
@@ -95,7 +103,7 @@ return function()
     desc = "Add Russian Layout",
     group = au,
     callback = function()
-      local buf = tonumber(vim.fn.expand "<abuf>")
+      local buf = tonumber(vim.fn.expand("<abuf>"))
 
       vim.api.nvim_buf_set_option(buf, "keymap", "russian-jcukenwin")
       vim.api.nvim_buf_set_option(buf, "iminsert", 0)
@@ -119,14 +127,16 @@ return function()
     desc = "Set dockerfile filetype",
     group = au,
     pattern = "Dockerfile*",
-    callback = function() vim.bo.filetype = "dockerfile" end,
+    callback = function()
+      vim.bo.filetype = "dockerfile"
+    end,
   })
 
   vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
     desc = "Enter to newline functionality",
     group = au,
     callback = function()
-      local buffer = tonumber(vim.fn.expand "<abuf>")
+      local buffer = tonumber(vim.fn.expand("<abuf>"))
       local ft = vim.api.nvim_buf_get_option(buffer, "filetype")
 
       if ft == "qf" then
