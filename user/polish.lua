@@ -1,4 +1,6 @@
 return function()
+  vim.keymap.del("n", "<leader>d")
+
   vim.opt.matchpairs:append({ "<:>" })
 
   vim.api.nvim_create_user_command("Messages", function()
@@ -67,6 +69,7 @@ return function()
     callback = function()
       local banned_messages = {
         "Accessing client.resolved_capabilities is deprecated",
+        "Client %d+ quit with exit code %d+ and signal %d+",
       }
 
       local original_notify = vim.notify
@@ -74,7 +77,7 @@ return function()
       local filtered_notify = function(msg, ...)
         if type(msg) == "string" then
           for _, banned in ipairs(banned_messages) do
-            if string.find(msg, banned, 1, true) then
+            if string.match(msg, banned) then
               print(msg)
               return
             end

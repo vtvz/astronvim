@@ -1,5 +1,7 @@
 return {
-  toggleterm = {
+  init = require("user.plugins.init"),
+
+  ["toggleterm"] = {
     open_mapping = [[<c-'>]],
   },
 
@@ -9,7 +11,7 @@ return {
     },
   },
 
-  heirline = function(config)
+  ["heirline"] = function(config)
     config[1][1] = astronvim.status.component.mode({
       hl = { bold = true },
       mode_text = { padding = { left = 1, right = 1 } },
@@ -19,6 +21,7 @@ return {
 
     return config
   end,
+
   ["mason-null-ls"] = {
     ensure_installed = {
       "stylua",
@@ -27,25 +30,63 @@ return {
       "hadolint",
     },
   },
+
   ["mason-lspconfig"] = {
     ensure_installed = {
       "sumneko_lua",
-      "ansible-language-server",
-      "dockerfile-language-server",
-      "eslint-lsp",
-      "hadolint",
-      "html-lsp",
+      "ansiblels",
+      "dockerls",
+      "eslint",
+      "html",
       "jdtls",
-      "json-lsp",
-      "lua-language-server",
-      "rust-analyzer",
+      "jsonls",
+      "sumneko_lua",
+      "rust_analyzer",
       "sqls",
-      "terraform-ls",
+      "terraformls",
       "tflint",
-      "typescript-language-server",
+      "tsserver",
       "rust_analyzer",
     },
   },
+
+  ["treesitter"] = {
+    ensure_installed = {
+      "go",
+      "html",
+      "javascript",
+      "json",
+      "markdown",
+      "python",
+      "query",
+      "rust",
+      "toml",
+      "tsx",
+      "typescript",
+      "yaml",
+    },
+    playground = {
+      enable = true,
+      disable = {},
+      updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+      persist_queries = false, -- Whether the query persists across vim sessions
+      query_linter = {
+        enable = true,
+        use_virtual_text = true,
+        lint_events = { "BufWrite", "CursorHold" },
+      },
+    },
+    incremental_selection = {
+      enable = true,
+      keymaps = {
+        init_selection = "<M-w>", -- maps in normal mode to init the node/scope selection
+        node_incremental = "<M-w>", -- increment to the upper named parent
+        node_decremental = "<M-C-w>", -- decrement to the previous node
+        scope_incremental = "<M-e>", -- increment to the upper scope (as defined in locals.scm)
+      },
+    },
+  },
+
   ["null-ls"] = function(config) -- overrides `require("null-ls").setup(config)`
     -- config variable is the default configuration table for the setup functino call
     local null_ls = require("null-ls")
@@ -91,49 +132,13 @@ return {
     return config -- return final config table to use in require("null-ls").setup(config)
   end,
 
-  bufferline = {
+  ["bufferline"] = {
     options = {
       show_buffer_close_icons = false,
       show_close_icon = true,
     },
   },
 
-  treesitter = {
-    playground = {
-      enable = true,
-      disable = {},
-      updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
-      persist_queries = false, -- Whether the query persists across vim sessions
-      query_linter = {
-        enable = true,
-        use_virtual_text = true,
-        lint_events = { "BufWrite", "CursorHold" },
-      },
-    },
-    ensure_installed = {
-      "go",
-      "html",
-      "javascript",
-      "json",
-      "markdown",
-      "python",
-      "query",
-      "rust",
-      "toml",
-      "tsx",
-      "typescript",
-      "yaml",
-    },
-    incremental_selection = {
-      enable = true,
-      keymaps = {
-        init_selection = "<M-w>", -- maps in normal mode to init the node/scope selection
-        node_incremental = "<M-w>", -- increment to the upper named parent
-        node_decremental = "<M-C-w>", -- decrement to the previous node
-        scope_incremental = "<M-e>", -- increment to the upper scope (as defined in locals.scm)
-      },
-    },
-  },
   ["neo-tree"] = {
     filesystem = {
       commands = {
@@ -147,6 +152,7 @@ return {
             search_dirs = { node.path },
           })
         end,
+
         copy_file_path = function(state)
           local node = state.tree:get_node()
           local path = vim.fn.fnamemodify(node.path, ":.")
