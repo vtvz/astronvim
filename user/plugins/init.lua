@@ -1,4 +1,16 @@
 return {
+  ["folke/neodev.nvim"] = {},
+
+  ["ray-x/lsp_signature.nvim"] = {
+    event = "LspAttach",
+  },
+
+  ["IndianBoy42/tree-sitter-just"] = {
+    config = function()
+      require("tree-sitter-just").setup({})
+    end,
+  },
+
   -- walkins amogus
   ["tamton-aquib/duck.nvim"] = {
     config = function()

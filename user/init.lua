@@ -1,36 +1,10 @@
---              AstroNvim Configuration Table
--- All configuration changes should go inside of the table below
+require("user.globals")
 
--- You can think of a Lua "table" as a dictionary like data structure the
--- normal format is "key = value". These also handle array like data structures
--- where a value with no key simply has an implicit numeric key
-
-P = function(v)
-  print(vim.inspect(v))
-  return v
-end
-
-K = function(v)
-  if type(v) ~= "table" then
-    return P(v)
-  end
-
-  local table = {}
-  for key, value in pairs(v) do
-    table[key] = type(value) .. " => " .. tostring(value)
-  end
-
-  return P(table)
-end
-
-RELOAD = function(...)
-  local modules = vim.tbl_flatten({ ... })
-
-  for _, module in ipairs(modules) do
-    package.loaded[module] = nil
-  end
-
-  return require(modules[1])
+local ok, neodev = pcall(require, "neodev")
+local sumneko_lua = {}
+if ok then
+  sumneko_lua = neodev.setup({ debug = true })
+  sumneko_lua.settings.legacy = nil
 end
 
 local config = {
@@ -57,13 +31,36 @@ local config = {
         ["gr"] = false, -- replace with telescope
       },
     },
+    formatting = {
+      filter = function(client)
+        -- disable formatting for sumneko_lua
+        if client.name == "sumneko_lua" then
+          return false
+        end
+        return true
+      end,
+    },
     skip_setup = { "rust_analyzer" },
+
+    server_registration = function(server, config)
+      -- doesn't work properly with readme instructions :(
+      if server == "sumneko_lua" then
+        config.settings = vim.tbl_deep_extend("force", config.settings or {}, sumneko_lua.settings)
+      end
+
+      require("lspconfig")[server].setup(config)
+    end,
+
     on_attach = function(client, bufnr)
       if client.name == "rust_analyzer" then
         local rt = require("rust-tools")
 
         vim.keymap.set("n", "K", rt.hover_actions.hover_actions, { buffer = bufnr })
       end
+
+      require("lsp_signature").on_attach({
+        floating_window = false,
+      }, bufnr)
       -- -- Hover actions
       -- vim.keymap.set("n", "K", rt.hover_actions.hover_actions, { buffer = bufnr })
       -- -- Code action groups

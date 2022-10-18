@@ -70,6 +70,7 @@ return function()
       local banned_messages = {
         "Accessing client.resolved_capabilities is deprecated",
         "Client %d+ quit with exit code %d+ and signal %d+",
+        "[LSP][%s+] timeout",
       }
 
       local original_notify = vim.notify
