@@ -39,6 +39,11 @@ local config = {
         end
         return true
       end,
+      format_on_save = {
+        ignore_filetypes = {
+          "groovy",
+        },
+      },
     },
     skip_setup = { "rust_analyzer" },
 
@@ -61,6 +66,7 @@ local config = {
       require("lsp_signature").on_attach({
         floating_window = false,
       }, bufnr)
+
       -- -- Hover actions
       -- vim.keymap.set("n", "K", rt.hover_actions.hover_actions, { buffer = bufnr })
       -- -- Code action groups
@@ -118,11 +124,16 @@ local config = {
     },
   },
 
-  -- ["mason-null-ls"] = {
-  --   ["setup_handlers"] = {
-  --     stylua = function() require("null-ls").register(require("null-ls").builtins.formatting.stylua) end,
-  --   },
-  -- },
+  ["mason-null-ls"] = {
+    ["setup_handlers"] = {
+      -- stylua = function() require("null-ls").register(require("null-ls").builtins.formatting.stylua) end,
+      shfmt = function()
+        require("null-ls").register(require("null-ls").builtins.formatting.shfmt.with({
+          extra_args = { "--indent", "2", "--space-redirects" },
+        }))
+      end,
+    },
+  },
 
   plugins = require("user.plugins"),
 }

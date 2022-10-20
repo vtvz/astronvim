@@ -15,10 +15,19 @@ return {
   ["tamton-aquib/duck.nvim"] = {
     config = function()
       local d = require("duck")
-
-      d.setup({ character = "ඞ", speed = -400, width = 1 })
+      local susus = {
+        { character = "ඞ", width = 1 },
+        -- { character = "🦊", width = 2 },
+        -- { character = "🦀", width = 2 },
+      }
 
       vim.keymap.set("n", "<leader>ds", function()
+        local sus = susus[(vim.fn.rand() % #susus) + 1]
+
+        local settings = vim.tbl_extend("keep", sus, { speed = -(vim.fn.rand() % 900) })
+
+        d.setup(settings)
+
         d.hatch()
       end, { desc = "Spawn Amogus" })
 

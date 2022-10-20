@@ -1,4 +1,19 @@
 return function()
+  vim.filetype.add({
+    extension = {
+      tf = "terraform",
+      tfvars = "hcl",
+    },
+    pattern = {
+      ["Dockerfile*"] = "dockerfile",
+      [".*/playbooks/.*%.yaml"] = "yaml.ansible",
+      [".*/playbooks/.*%.yml"] = "yaml.ansible",
+      [".*/roles/.*%.yaml"] = "yaml.ansible",
+      [".*/roles/.*%.yml"] = "yaml.ansible",
+      [".*/inventory/.*%.ini"] = "ansible_hosts",
+    },
+  })
+
   vim.keymap.del("n", "<leader>d")
 
   vim.opt.matchpairs:append({ "<:>" })
@@ -124,15 +139,6 @@ return function()
         .. " ("
         .. vim.fn.fnamemodify(vim.fn.getcwd(), ":h:t")
         .. ")"
-    end,
-  })
-
-  vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-    desc = "Set dockerfile filetype",
-    group = au,
-    pattern = "Dockerfile*",
-    callback = function()
-      vim.bo.filetype = "dockerfile"
     end,
   })
 

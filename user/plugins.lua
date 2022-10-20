@@ -56,7 +56,7 @@ return {
       "html",
       "javascript",
       "json",
-      "markdown",
+      -- "markdown",
       "python",
       "query",
       "rust",
@@ -91,15 +91,54 @@ return {
     -- config variable is the default configuration table for the setup functino call
     local null_ls = require("null-ls")
 
+    local formatting = {}
+
+    local timer = vim.loop.new_timer()
+    timer:start(
+      0,
+      500,
+      vim.schedule_wrap(function()
+        if #formatting == 0 then
+          return
+        end
+
+        local items = vim.lsp.util.get_progress_messages()
+        if #items > 0 then
+          return
+        end
+
+        for bufnr, _ in ipairs(formatting) do
+          vim.api.nvim_buf_set_option(bufnr, "modifiable", true)
+
+          formatting[bufnr] = nil
+        end
+      end)
+    )
+
     local groovy_formatting = {
       method = null_ls.methods.FORMATTING,
       filetypes = { "groovy", "java", "Jenkinsfile" },
       name = "groovy-format.sh",
-      generator = require("null-ls.helpers").formatter_factory({
-        args = { "$FILENAME" },
+      generator = require("null-ls.helpers").generator_factory({
+        args = function(params)
+          vim.api.nvim_buf_set_option(params.bufnr, "modifiable", false)
+          return { "$FILENAME" }
+        end,
         command = "groovy-format.sh",
+        on_output = function(params, done)
+          vim.api.nvim_buf_set_option(params.bufnr, "modifiable", true)
+          formatting[params.bufnr] = nil
+
+          local output = params.output
+          if not output then
+            return done()
+          end
+
+          return done({ { text = output } })
+        end,
         to_stdin = false,
         to_temp_file = true,
+        ignore_stderr = true,
         from_temp_file = true,
         timeout = 60 * 1000,
       }),
@@ -113,16 +152,25 @@ return {
     }
     -- set up null-ls's on_attach function
     -- NOTE: You can remove this on attach function to disable format on save
-    config.on_attach = function(client)
+    local orig_on_attach = config.on_attach
+
+    config.on_attach = function(client, attach_bufnr)
+      orig_on_attach(client, attach_bufnr)
+
       if client.resolved_capabilities.document_formatting then
         vim.api.nvim_create_autocmd("BufWritePre", {
           desc = "Auto format before save",
-          pattern = "<buffer>",
+          buffer = attach_bufnr,
           callback = function()
             if vim.bo.filetype == "groovy" then
+              local bufnr = tonumber(vim.fn.expand("<abuf>"))
+              formatting[bufnr] = true
+              vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
+
               vim.lsp.buf.format({
                 timeout_ms = 60 * 1000,
                 async = true,
+                bufnr = bufnr,
               })
             end
           end,
