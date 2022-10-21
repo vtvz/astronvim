@@ -50,6 +50,10 @@ local config = {
     server_registration = function(server, config)
       -- doesn't work properly with readme instructions :(
       if server == "sumneko_lua" then
+        for lib, _ in pairs(config.settings.Lua.workspace.library) do
+          table.insert(sumneko_lua.settings.Lua.workspace.library, lib)
+        end
+
         config.settings = vim.tbl_deep_extend("force", config.settings or {}, sumneko_lua.settings)
       end
 
