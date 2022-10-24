@@ -1,10 +1,13 @@
 require("user.globals")
 
 local ok, neodev = pcall(require, "neodev")
-local sumneko_lua = {}
 if ok then
-  sumneko_lua = neodev.setup({ debug = true })
-  sumneko_lua.settings.legacy = nil
+  neodev.setup({
+    override = function(_, library)
+      library.enabled = true
+      library.plugins = true
+    end,
+  })
 end
 
 local config = {
@@ -46,19 +49,6 @@ local config = {
       },
     },
     skip_setup = { "rust_analyzer" },
-
-    server_registration = function(server, config)
-      -- doesn't work properly with readme instructions :(
-      if server == "sumneko_lua" then
-        for lib, _ in pairs(config.settings.Lua.workspace.library) do
-          table.insert(sumneko_lua.settings.Lua.workspace.library, lib)
-        end
-
-        config.settings = vim.tbl_deep_extend("force", config.settings or {}, sumneko_lua.settings)
-      end
-
-      require("lspconfig")[server].setup(config)
-    end,
 
     on_attach = function(client, bufnr)
       if client.name == "rust_analyzer" then

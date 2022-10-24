@@ -127,6 +127,11 @@ return {
         command = "groovy-format.sh",
         on_output = function(params, done)
           vim.api.nvim_buf_set_option(params.bufnr, "modifiable", true)
+          vim.defer_fn(function()
+            if vim.bo[0].modified then
+              vim.api.nvim_cmd({ cmd = "write", mods = { noautocmd = true }, args = { params.bufname } }, {})
+            end
+          end, 100)
           formatting[params.bufnr] = nil
 
           local output = params.output
