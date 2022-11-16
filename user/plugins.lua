@@ -57,6 +57,7 @@ return {
       "javascript",
       "json",
       -- "markdown",
+      "hcl",
       "python",
       "query",
       "rust",
@@ -64,6 +65,7 @@ return {
       "tsx",
       "typescript",
       "yaml",
+      "lua",
     },
     playground = {
       enable = true,
@@ -128,8 +130,11 @@ return {
         on_output = function(params, done)
           vim.api.nvim_buf_set_option(params.bufnr, "modifiable", true)
           vim.defer_fn(function()
-            if vim.bo[0].modified then
-              vim.api.nvim_cmd({ cmd = "write", mods = { noautocmd = true }, args = { params.bufname } }, {})
+            if vim.bo[params.bufnr].modified then
+              -- local current_bufnr = vim.api.nvim_get_current_buf()
+              -- if params.bufnr ~= current_bufnr then
+              -- end
+              vim.api.nvim_cmd({ cmd = "write", mods = { noautocmd = true } }, {})
             end
           end, 100)
           formatting[params.bufnr] = nil
@@ -166,9 +171,9 @@ return {
         vim.api.nvim_create_autocmd("BufWritePre", {
           desc = "Auto format before save",
           buffer = attach_bufnr,
-          callback = function()
-            if vim.bo.filetype == "groovy" then
-              local bufnr = tonumber(vim.fn.expand("<abuf>"))
+          callback = function(args)
+            local bufnr = args.buf
+            if vim.bo[bufnr].filetype == "groovy" then
               formatting[bufnr] = true
               vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
 

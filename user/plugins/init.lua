@@ -1,4 +1,6 @@
 return {
+  -- ["lewis6991/impatient.nvim"] = { disable = true },
+
   ["folke/neodev.nvim"] = {},
 
   ["ray-x/lsp_signature.nvim"] = {
@@ -6,6 +8,7 @@ return {
   },
 
   ["IndianBoy42/tree-sitter-just"] = {
+    after = "nvim-treesitter",
     config = function()
       require("tree-sitter-just").setup({})
     end,

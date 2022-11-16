@@ -77,6 +77,12 @@ local config = {
 
   mappings = {
     n = {
+      -- ["<leader>gg"] = {
+      --   function()
+      --     astronvim.toggle_term_cmd({ cmd = "lazygit", hidden = true, count = 150 })
+      --   end,
+      --   desc = "ToggleTerm lazygit",
+      -- },
       ["<leader>w"] = { "<cmd>wa<cr>", desc = "Save" },
       ["gr"] = {
         function()

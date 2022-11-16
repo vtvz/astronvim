@@ -5,7 +5,7 @@ return function()
       tfvars = "hcl",
     },
     pattern = {
-      ["Dockerfile*"] = "dockerfile",
+      [".*/Dockerfile.*"] = "dockerfile",
       [".*/playbooks/.*%.yaml"] = "yaml.ansible",
       [".*/playbooks/.*%.yml"] = "yaml.ansible",
       [".*/roles/.*%.yaml"] = "yaml.ansible",
