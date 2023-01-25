@@ -78,35 +78,6 @@ return function()
     end,
   })
 
-  vim.api.nvim_create_autocmd("UIEnter", {
-    desc = "Suppress some notifications",
-    group = au,
-    callback = function()
-      local banned_messages = {
-        "Accessing client.resolved_capabilities is deprecated",
-        "Client %d+ quit with exit code %d+ and signal %d+",
-        "[LSP][%s+] timeout",
-      }
-
-      local original_notify = vim.notify
-
-      local filtered_notify = function(msg, ...)
-        if type(msg) == "string" then
-          for _, banned in ipairs(banned_messages) do
-            if string.match(msg, banned) then
-              print(msg)
-              return
-            end
-          end
-        end
-
-        original_notify(msg, ...)
-      end
-
-      vim.notify = filtered_notify
-    end,
-  })
-
   vim.api.nvim_create_autocmd("User", {
     desc = "On launch",
     pattern = "SessionLoadPost",
@@ -152,7 +123,7 @@ return function()
       if ft == "qf" then
         vim.keymap.set(
           "n",
-          "<CR>",
+          "<C-CR>",
           "<CR><CMD>cclose<CR>",
           { desc = "Close quicklist after selecting item", buffer = buffer }
         )

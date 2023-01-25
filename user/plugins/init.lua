@@ -64,7 +64,12 @@ return {
   },
 
   -- Surround with things
-  ["tpope/vim-surround"] = {},
+  -- ["tpope/vim-surround"] = {},
+  ["kylechui/nvim-surround"] = {
+    config = function()
+      require("nvim-surround").setup({})
+    end,
+  },
 
   -- Smooth scrolling
   ["declancm/cinnamon.nvim"] = {
@@ -94,11 +99,54 @@ return {
     config = function()
       local rt = require("rust-tools")
 
-      rt.setup({
+      local rt_config = {
         server = astronvim.lsp.server_settings("rust_analyzer"), -- get the server settings and built in capabilities/on_attach
-      })
+      }
+
+      if not rt_config.server.settings then
+        rt_config.server.settings = {}
+      end
+
+      rt_config.server.settings["rust-analyzer"] = {
+        checkOnSave = {
+          command = "check",
+        },
+      }
+
+      rt.setup(rt_config)
 
       rt.inlay_hints.enable()
+    end,
+  },
+
+  ["rcarriga/nvim-notify"] = {
+    event = "UIEnter",
+    config = function()
+      require("configs.notify")
+
+      local banned_messages = {
+        "Accessing client.resolved_capabilities is deprecated",
+        "Client %d+ quit with exit code %d+ and signal %d+",
+        "[LSP][%s+] timeout",
+        'Error detected while processing LspAttach Autocommands for "*"',
+      }
+
+      local original_notify = vim.notify
+
+      local filtered_notify = function(msg, ...)
+        if type(msg) == "string" then
+          for _, banned in ipairs(banned_messages) do
+            if string.match(msg, banned) then
+              print(msg)
+              return
+            end
+          end
+        end
+
+        original_notify(msg, ...)
+      end
+
+      vim.notify = filtered_notify
     end,
   },
 }

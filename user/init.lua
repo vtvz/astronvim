@@ -55,6 +55,7 @@ local config = {
         local rt = require("rust-tools")
 
         vim.keymap.set("n", "K", rt.hover_actions.hover_actions, { buffer = bufnr })
+        vim.keymap.set("n", "J", rt.join_lines.join_lines, { buffer = bufnr })
       end
 
       require("lsp_signature").on_attach({

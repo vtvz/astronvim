@@ -67,6 +67,9 @@ return {
       "yaml",
       "lua",
     },
+    context_commentstring = {
+      enable = true,
+    },
     playground = {
       enable = true,
       disable = {},
