@@ -1,7 +1,13 @@
 return {
   -- ["lewis6991/impatient.nvim"] = { disable = true },
 
+  -- ["JoosepAlviste/nvim-ts-context-commentstring"] = { disable = true },
+
+  ["stevearc/aerial.nvim"] = { disable = true },
+
   ["folke/neodev.nvim"] = {},
+
+  ["fatih/vim-go"] = {},
 
   ["ray-x/lsp_signature.nvim"] = {
     event = "LspAttach",

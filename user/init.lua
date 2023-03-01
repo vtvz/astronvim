@@ -48,7 +48,16 @@ local config = {
         },
       },
     },
+
     skip_setup = { "rust_analyzer" },
+
+    ["server-settings"] = {
+      sumneko_lua = function(config)
+        config.settings.Lua.workspace.library["/home/vtvz/.local/share/Steam/steamapps/common/Don't Starve Together/data/databundles/"] =
+          true
+        return config
+      end,
+    },
 
     on_attach = function(client, bufnr)
       if client.name == "rust_analyzer" then
@@ -77,7 +86,12 @@ local config = {
   end,
 
   mappings = {
+    v = {
+      ["p"] = { "p:let @+=@0<cr>", desc = "Paste without trashing main registry" },
+      ["<leader>pp"] = { "p", desc = "Paste" },
+    },
     n = {
+      ["yA"] = { "ggVGy<C-O>", desc = "Yank whole page" },
       -- ["<leader>gg"] = {
       --   function()
       --     astronvim.toggle_term_cmd({ cmd = "lazygit", hidden = true, count = 150 })
