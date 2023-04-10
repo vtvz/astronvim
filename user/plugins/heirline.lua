@@ -1,31 +1,30 @@
-return function(config)
-  config[1] = {
-    hl = { fg = "fg", bg = "bg" },
+return {
+  "rebelot/heirline.nvim",
+  opts = function(_, opts)
+    local status = require("astronvim.utils.status")
 
-    astronvim.status.component.mode({
-      hl = { bold = true },
-      mode_text = { padding = { left = 1, right = 1 } },
-    }),
+    opts.statusline = {
+      hl = { fg = "fg", bg = "bg" },
+      status.component.mode({
+        hl = { bold = true },
+        mode_text = { padding = { left = 1, right = 1 } },
+      }),
+      status.component.git_branch(),
+      -- TODO: REMOVE THIS WITH v3
+      status.component.file_info({ filetype = {}, filename = false, file_modified = false }),
+      status.component.git_diff(),
+      status.component.diagnostics(),
+      status.component.fill(),
+      status.component.cmd_info(),
+      status.component.fill(),
+      status.component.file_info({ filename = { modify = ":." } }),
+      status.component.fill(),
+      status.component.lsp(),
+      status.component.treesitter(),
+      status.component.nav(),
+      status.component.mode({ surround = { separator = "right" } }),
+    }
 
-    astronvim.status.component.git_branch(),
-    -- TODO: REMOVE THIS WITH v3
-    astronvim.status.component.file_info(
-      (astronvim.is_available("bufferline.nvim") or vim.g.heirline_bufferline)
-          and { filetype = {}, filename = false, file_modified = false }
-        or nil
-    ),
-    astronvim.status.component.git_diff(),
-    astronvim.status.component.fill(),
-    astronvim.status.component.cmd_info(),
-    astronvim.status.component.fill(),
-    astronvim.status.component.file_info({ filename = { modify = ":." } }),
-    astronvim.status.component.fill(),
-    astronvim.status.component.diagnostics(),
-    astronvim.status.component.lsp(),
-    astronvim.status.component.treesitter(),
-    astronvim.status.component.nav(),
-    astronvim.status.component.mode({ surround = { separator = "right" } }),
-  }
-
-  return config
-end
+    return opts
+  end,
+}

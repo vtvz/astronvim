@@ -11,12 +11,13 @@ return function()
       [".*/roles/.*%.yaml"] = "yaml.ansible",
       [".*/roles/.*%.yml"] = "yaml.ansible",
       [".*/inventory/.*%.ini"] = "ansible_hosts",
+      ["haproxy.cfg.j2"] = "haproxy.jinga",
+      ["haproxy.cfg"] = "haproxy",
     },
   })
 
-  vim.keymap.del("n", "<leader>d")
-
   vim.opt.matchpairs:append({ "<:>" })
+  vim.opt.iskeyword:remove("_")
 
   vim.api.nvim_create_user_command("Messages", function()
     local messages_output = vim.api.nvim_exec(":messages", true)
@@ -38,6 +39,23 @@ return function()
     vim.api.nvim_set_current_buf(MESSAGES_BUFNR)
     vim.api.nvim_win_set_cursor(0, { vim.api.nvim_buf_line_count(0), 0 })
   end, { desc = "Show messages in a buffer" })
+
+  vim.api.nvim_create_user_command("WipeAll", function()
+    local Path = require("plenary.path")
+
+    local bufs = vim.api.nvim_list_bufs()
+    for _, bufnr in ipairs(bufs) do
+      if bufnr ~= vim.api.nvim_get_current_buf() then
+        local filename = vim.api.nvim_buf_get_name(bufnr)
+        if filename ~= "" then
+          local path = Path:new(filename)
+          if path:exists() then
+            vim.api.nvim_buf_delete(bufnr, {})
+          end
+        end
+      end
+    end
+  end, { desc = "Close all buffers" })
 
   local au = vim.api.nvim_create_augroup("vtvz_test", { clear = true })
 
@@ -85,7 +103,7 @@ return function()
     callback = function()
       vim.defer_fn(function()
         open_neotree()
-      end, 100)
+      end, 200)
     end,
   })
 

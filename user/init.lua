@@ -1,96 +1,19 @@
 require("user.globals")
 
-local ok, neodev = pcall(require, "neodev")
-if ok then
-  neodev.setup({
-    override = function(_, library)
-      library.enabled = true
-      library.plugins = true
-    end,
-  })
-end
-
-local config = {
-  header = {
-    "╔═══════════════════════════════════════╗",
-    "║                                       ║",
-    "║  ██╗   ██╗████████╗██╗   ██╗███████╗  ║",
-    "║  ██║   ██║╚══██╔══╝██║   ██║╚══███╔╝  ║",
-    "║  ██║   ██║   ██║   ██║   ██║  ███╔╝   ║",
-    "║  ╚██╗ ██╔╝   ██║   ╚██╗ ██╔╝ ███╔╝    ║",
-    "║   ╚████╔╝    ██║    ╚████╔╝ ███████╗  ║",
-    "║    ╚═══╝     ╚═╝     ╚═══╝  ╚══════╝  ║",
-    "║                                       ║",
-    "╚═══════════════════════════════════════╝",
-  },
-
-  updater = {
-    channel = "stable", -- "stable" or "nightly"
-  },
-
-  lsp = {
-    mappings = {
-      n = {
-        ["gr"] = false, -- replace with telescope
-      },
-    },
-    formatting = {
-      filter = function(client)
-        -- disable formatting for sumneko_lua
-        if client.name == "sumneko_lua" then
-          return false
-        end
-        return true
-      end,
-      format_on_save = {
-        ignore_filetypes = {
-          "groovy",
-        },
-      },
-    },
-
-    skip_setup = { "rust_analyzer" },
-
-    ["server-settings"] = {
-      sumneko_lua = function(config)
-        config.settings.Lua.workspace.library["/home/vtvz/.local/share/Steam/steamapps/common/Don't Starve Together/data/databundles/"] =
-          true
-        return config
-      end,
-    },
-
-    on_attach = function(client, bufnr)
-      if client.name == "rust_analyzer" then
-        local rt = require("rust-tools")
-
-        vim.keymap.set("n", "K", rt.hover_actions.hover_actions, { buffer = bufnr })
-        vim.keymap.set("n", "J", rt.join_lines.join_lines, { buffer = bufnr })
-      end
-
-      require("lsp_signature").on_attach({
-        floating_window = false,
-      }, bufnr)
-
-      -- -- Hover actions
-      -- vim.keymap.set("n", "K", rt.hover_actions.hover_actions, { buffer = bufnr })
-      -- -- Code action groups
-      -- vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
-    end,
-  },
-
-  options = function(options)
-    options.opt.cmdheight = 1
-    options.opt.title = true
-
-    return options
-  end,
-
+return {
   mappings = {
     v = {
-      ["p"] = { "p:let @+=@0<cr>", desc = "Paste without trashing main registry" },
+      ["p"] = { "p :let @+=@0<cr>", desc = "Paste without trashing main registry" },
+      ["<leader>fc"] = {
+        function()
+          require("telescope.builtin").grep_string()
+        end,
+        desc = "Find for word under cursor",
+      },
       ["<leader>pp"] = { "p", desc = "Paste" },
     },
     n = {
+      [ [[<c-'>]] ] = false,
       ["yA"] = { "ggVGy<C-O>", desc = "Yank whole page" },
       -- ["<leader>gg"] = {
       --   function()
@@ -113,7 +36,7 @@ local config = {
         desc = "Search workspace symbols",
       },
       ["<leader>ss"] = { "<CMD>Telescope resume<CR>", desc = "Resume last Telescope search" },
-
+      ["<leader>C"] = { "<CMD>WipeAll<CR>", desc = "Wipe all buffers except current" },
       -- Copy current file relative path
       ["<leader><C-o>"] = {
         function()
@@ -123,7 +46,6 @@ local config = {
         end,
         desc = "Copy current file relative path",
       },
-
       ["gK"] = {
         function()
           require("opendocs").open()
@@ -136,21 +58,92 @@ local config = {
         end,
         desc = "Copy reference",
       },
+      ["L"] = {
+        function()
+          require("astronvim.utils.buffer").nav(vim.v.count > 0 and vim.v.count or 1)
+        end,
+        desc = "Next buffer",
+      },
+      ["H"] = {
+        function()
+          require("astronvim.utils.buffer").nav(-(vim.v.count > 0 and vim.v.count or 1))
+        end,
+        desc = "Previous buffer",
+      },
     },
   },
+  lsp = {
+    setup_handlers = {
+      -- add custom handler
+      rust_analyzer = function(_, opts)
+        local rt = require("rust-tools")
 
-  ["mason-null-ls"] = {
-    ["setup_handlers"] = {
-      -- stylua = function() require("null-ls").register(require("null-ls").builtins.formatting.stylua) end,
-      shfmt = function()
-        require("null-ls").register(require("null-ls").builtins.formatting.shfmt.with({
-          extra_args = { "--indent", "2", "--space-redirects" },
-        }))
+        local rt_config = {
+          server = opts, -- get the server settings and built in capabilities/on_attach
+        }
+
+        if not rt_config.server.settings then
+          rt_config.server.settings = {}
+        end
+
+        rt_config.server.settings["rust-analyzer"] = {
+          checkOnSave = {
+            command = "check",
+          },
+        }
+
+        rt.setup(rt_config)
+
+        rt.inlay_hints.enable()
       end,
     },
+    formatting = {
+      filter = function(client)
+        -- disable formatting for sumneko_lua
+        if client.name == "lua_ls" then
+          return false
+        end
+        return true
+      end,
+      format_on_save = {
+        ignore_filetypes = {
+          "groovy",
+        },
+      },
+    },
+    skip_setup = { "rust_analyzer" },
+    config = {
+      lua_ls = function(config)
+        local utils = require("astronvim.utils")
+
+        config.settings.Lua.workspace.library = utils.extend_tbl(config.settings.Lua.workspace.library, {
+          ["/home/vtvz/.local/share/Steam/steamapps/common/Don't Starve Together/data/databundles/"] = true,
+        })
+        return config
+      end,
+    },
+    on_attach = function(client, bufnr)
+      if client.name == "rust_analyzer" then
+        local rt = require("rust-tools")
+
+        vim.keymap.set("n", "K", rt.hover_actions.hover_actions, { buffer = bufnr })
+        vim.keymap.set("n", "J", rt.join_lines.join_lines, { buffer = bufnr })
+      end
+
+      require("lsp_signature").on_attach({
+        floating_window = false,
+      }, bufnr)
+
+      -- -- Hover actions
+      -- vim.keymap.set("n", "K", rt.hover_actions.hover_actions, { buffer = bufnr })
+      -- -- Code action groups
+      -- vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
+    end,
   },
+  options = function(options)
+    options.opt.cmdheight = 1
+    options.opt.title = true
 
-  plugins = require("user.plugins"),
+    return options
+  end,
 }
-
-return config
