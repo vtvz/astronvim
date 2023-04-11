@@ -143,6 +143,7 @@ return {
   options = function(options)
     options.opt.cmdheight = 1
     options.opt.title = true
+    options.opt.exrc = true
 
     return options
   end,

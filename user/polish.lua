@@ -6,11 +6,6 @@ return function()
     },
     pattern = {
       [".*/Dockerfile.*"] = "dockerfile",
-      [".*/playbooks/.*%.yaml"] = "yaml.ansible",
-      [".*/playbooks/.*%.yml"] = "yaml.ansible",
-      [".*/roles/.*%.yaml"] = "yaml.ansible",
-      [".*/roles/.*%.yml"] = "yaml.ansible",
-      [".*/inventory/.*%.ini"] = "ansible_hosts",
       ["haproxy.cfg.j2"] = "haproxy.jinga",
       ["haproxy.cfg"] = "haproxy",
     },

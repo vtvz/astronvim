@@ -269,14 +269,29 @@ return {
   },
   {
     "jay-babu/mason-null-ls.nvim",
-    opts = {
-      "hadolint",
-      "nginx-language-server",
-      "prettierd",
-      "shellcheck",
-      "shfmt",
-      "stylua",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "jose-elias-alvarez/null-ls.nvim",
     },
+    opts = {
+      ensure_installed = {
+        "hadolint",
+        "nginx-language-server",
+        "prettierd",
+        "shellcheck",
+        "shfmt",
+        "stylua",
+      },
+      handlers = {
+        stylua = function(_, _)
+          local null_ls = require("null-ls")
+          null_ls.register(null_ls.builtins.formatting.stylua)
+        end,
+      },
+    },
+    config = function(plugin, opts)
+      require("plugins.configs.mason-null-ls")(plugin, opts)
+    end,
   },
   {
     "jose-elias-alvarez/null-ls.nvim",
