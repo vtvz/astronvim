@@ -126,8 +126,11 @@ return {
   {
     "declancm/cinnamon.nvim",
     lazy = false,
-    config = function()
-      require("cinnamon").setup()
+    opts = {
+      default_delay = 1,
+    },
+    config = function(_, opts)
+      require("cinnamon").setup(opts)
     end,
   },
   {
@@ -303,6 +306,7 @@ return {
       -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/diagnostics
       opts.sources = {
         require("user.groovy_formatter").setup(),
+        -- require("null-ls").builtins.diagnostics.tfsec,
       }
       -- set up null-ls's on_attach function
       -- NOTE: You can remove this on attach function to disable format on save
