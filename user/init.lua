@@ -3,6 +3,8 @@ require("user.globals")
 return {
   mappings = {
     v = {
+      [">"] = { ">gv" },
+      ["<"] = { "<gv" },
       ["p"] = { "p :let @+=@0<cr>", desc = "Paste without trashing main registry" },
       ["<leader>fc"] = {
         function()
@@ -41,6 +43,8 @@ return {
       ["<leader><C-o>"] = {
         function()
           local path = vim.fn.expand("%")
+          path = vim.fn.fnamemodify(path, ":.")
+
           vim.fn.setreg("+", path)
           print("Copied path to current file: " .. path)
         end,

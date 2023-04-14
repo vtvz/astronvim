@@ -85,7 +85,7 @@ function M.on_attach(on_attach)
       return
     end
 
-    if client.resolved_capabilities.document_formatting then
+    if client.server_capabilities.documentFormattingProvider then
       M._setup_timer()
       local autocmd_group = "vtvz_auto_format_" .. attach_bufnr
       vim.api.nvim_create_augroup(autocmd_group, { clear = true })
