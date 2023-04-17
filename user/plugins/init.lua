@@ -32,7 +32,7 @@ return {
   },
   {
     "fatih/vim-go",
-    lazy = false,
+    event = "VeryLazy",
   },
   {
     "ray-x/lsp_signature.nvim",
@@ -40,7 +40,7 @@ return {
   },
   {
     "IndianBoy42/tree-sitter-just",
-    lazy = false,
+    event = "VeryLazy",
     after = "nvim-treesitter",
     config = function()
       require("tree-sitter-just").setup({})
@@ -49,7 +49,7 @@ return {
   -- walkins amogus
   {
     "giusgad/pets.nvim",
-    lazy = false,
+    event = "VeryLazy",
     dependencies = { "MunifTanjim/nui.nvim", "giusgad/hologram.nvim" },
     config = function(_, opts)
       require("pets").setup(opts)
@@ -57,7 +57,7 @@ return {
   },
   {
     "tamton-aquib/duck.nvim",
-    lazy = false,
+    event = "VeryLazy",
     config = function()
       local d = require("duck")
       local susus = {
@@ -91,15 +91,16 @@ return {
   },
   {
     "Joorem/vim-haproxy",
-    lazy = false,
+    event = "VeryLazy",
   },
   {
+    -- Jinja2 template
     "HiPhish/jinja.vim",
     url = "https://gitlab.com/HiPhish/jinja.vim.git",
-    lazy = false,
+    event = "VeryLazy",
   },
-  -- Save with sudo
   {
+    -- Save with sudo
     "lambdalisue/suda.vim",
     cmd = {
       "SudaWrite",
@@ -113,19 +114,18 @@ return {
       "TSHighlightCapturesUnderCursor",
     },
   },
-  -- Surround with things
-  -- ["tpope/vim-surround"] = {},
   {
     "kylechui/nvim-surround",
-    lazy = false,
-    config = function()
-      require("nvim-surround").setup({})
+    event = "VeryLazy",
+    opts = {},
+    config = function(_, opts)
+      require("nvim-surround").setup(opts)
     end,
   },
   -- Smooth scrolling
   {
     "declancm/cinnamon.nvim",
-    lazy = false,
+    event = "VeryLazy",
     opts = {
       default_delay = 1,
     },
@@ -165,7 +165,7 @@ return {
   -- done
   {
     "simrat39/rust-tools.nvim",
-    lazy = false,
+    event = "VeryLazy",
     dependencies = "mason-lspconfig.nvim", -- make sure to load after mason-lspconfig
   },
   {
@@ -356,7 +356,7 @@ return {
   {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
-    lazy = false,
+    event = "VeryLazy",
     config = function(_, opts)
       require("todo-comments").setup(opts)
     end,
