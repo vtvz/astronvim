@@ -1,12 +1,11 @@
 local ts_utils = require("nvim-treesitter.ts_utils")
-local q = require("vim.treesitter.query")
 
 local M = {
   lang = "hcl",
   warn = require("opendocs").warn,
 }
 
-M.block_query = vim.treesitter.parse_query(
+M.block_query = vim.treesitter.query.parse(
   M.lang,
   [[
 		;; query
@@ -18,7 +17,7 @@ M.block_query = vim.treesitter.parse_query(
   ]]
 )
 
-M.attribute_query = vim.treesitter.parse_query(
+M.attribute_query = vim.treesitter.query.parse(
   M.lang,
   [[
 		;; query
@@ -55,9 +54,14 @@ function M.is_matches(query, search_node, bufnr)
   return false
 end
 
+--- @param cursor_node TSNode Node under cursor
+--- @param bufnr number Buffer number
 function M.get_block_and_attribute(cursor_node, bufnr)
   local block_node = cursor_node
   local attribute_node
+
+  -- Treverse parents to match block query with attribute query
+  -- Find block and arrtibute
   while block_node and not M.is_matches(M.block_query, block_node, bufnr) do
     if not attribute_node and (M.is_matches(M.attribute_query, block_node, bufnr)) then
       attribute_node = block_node
@@ -73,7 +77,7 @@ function M.get_block_and_attribute(cursor_node, bufnr)
   local attribute = ""
   if attribute_node then
     for _, match, _ in M.attribute_query:iter_matches(attribute_node, bufnr) do
-      attribute = q.get_node_text(M.get_named_match(M.attribute_query, match, "attribute"), bufnr)
+      attribute = vim.treesitter.get_node_text(M.get_named_match(M.attribute_query, match, "attribute"), bufnr)
       break
     end
   end
@@ -93,9 +97,9 @@ function M.copy_ref(bufnr)
   end
 
   for _, match, _ in M.block_query:iter_matches(block_node, bufnr) do
-    local type = q.get_node_text(M.get_named_match(M.block_query, match, "type"), bufnr)
-    local full_resource = q.get_node_text(M.get_named_match(M.block_query, match, "resource"), bufnr)
-    local name = q.get_node_text(M.get_named_match(M.block_query, match, "name"), bufnr)
+    local type = vim.treesitter.get_node_text(M.get_named_match(M.block_query, match, "type"), bufnr)
+    local full_resource = vim.treesitter.get_node_text(M.get_named_match(M.block_query, match, "resource"), bufnr)
+    local name = vim.treesitter.get_node_text(M.get_named_match(M.block_query, match, "name"), bufnr)
 
     local result = {}
 
@@ -111,6 +115,10 @@ function M.copy_ref(bufnr)
     end
 
     vim.fn.setreg("+", vim.fn.join(result, "."))
+
+    print("Copied: " .. vim.fn.join(result, "."))
+
+    break
   end
 end
 
@@ -126,8 +134,8 @@ function M.open_doc(bufnr)
   end
 
   for _, match, _ in M.block_query:iter_matches(block_node, bufnr) do
-    local type = q.get_node_text(M.get_named_match(M.block_query, match, "type"), bufnr)
-    local full_resource = q.get_node_text(M.get_named_match(M.block_query, match, "resource"), bufnr)
+    local type = vim.treesitter.get_node_text(M.get_named_match(M.block_query, match, "type"), bufnr)
+    local full_resource = vim.treesitter.get_node_text(M.get_named_match(M.block_query, match, "resource"), bufnr)
 
     local parts = vim.split(full_resource, "_")
     local provider = table.remove(parts, 1)
