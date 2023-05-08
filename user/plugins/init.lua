@@ -317,6 +317,10 @@ return {
     end,
   },
   {
+    "nvim-telescope/telescope.nvim",
+    opts = { cache_picker = { num_pickers = 5 } },
+  },
+  {
     "nvim-neo-tree/neo-tree.nvim",
     opts = {
       filesystem = {

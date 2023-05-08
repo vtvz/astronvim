@@ -13,6 +13,7 @@ return {
         desc = "Find for word under cursor",
       },
       ["<leader>pp"] = { "p", desc = "Paste" },
+      ["A"] = { "ggoG", desc = "Select All" },
     },
     n = {
       [ [[<c-'>]] ] = false,
@@ -27,6 +28,12 @@ return {
       ["gr"] = {
         function()
           require("telescope.builtin").lsp_references()
+        end,
+        desc = "Search references",
+      },
+      ["<leader>fl"] = {
+        function()
+          require("telescope.builtin").pickers()
         end,
         desc = "Search references",
       },
@@ -73,6 +80,28 @@ return {
           require("astronvim.utils.buffer").nav(-(vim.v.count > 0 and vim.v.count or 1))
         end,
         desc = "Previous buffer",
+      },
+      -- A personal trick for my workspace setup
+      ["<leader>t<C-'>"] = {
+        function()
+          local Job = require("plenary.job")
+          local Terminal = require("toggleterm.terminal").Terminal
+
+          Job:new({
+            command = "just",
+            args = { "ws", "profiles" },
+            on_exit = vim.schedule_wrap(function(j, _)
+              local result = vim.fn.join(j:result())
+              local profiles = vim.fn.json_decode(result)
+
+              for i, profile in ipairs(profiles) do
+                local zsh = Terminal:new({ cmd = "just ws profile '" .. profile .. "' just ws zsh", count = i })
+                zsh:spawn()
+              end
+            end),
+          }):sync(5000)
+        end,
+        desc = "Spawn terminals with profiles",
       },
     },
   },
