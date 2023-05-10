@@ -44,7 +44,6 @@ return {
         end,
         desc = "Search workspace symbols",
       },
-      ["<leader>ss"] = { "<CMD>Telescope resume<CR>", desc = "Resume last Telescope search" },
       ["<leader>C"] = { "<CMD>WipeAll<CR>", desc = "Wipe all buffers except current" },
       -- Copy current file relative path
       ["<leader><C-o>"] = {

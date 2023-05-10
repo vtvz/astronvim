@@ -55,8 +55,10 @@ function M.setup()
           if vim.bo[params.bufnr].modified then
             -- local current_bufnr = vim.api.nvim_get_current_buf()
             -- if params.bufnr ~= current_bufnr then
+            vim.api.nvim_buf_call(params.bufnr, function()
+              vim.api.nvim_cmd({ cmd = "write", mods = { noautocmd = true } }, {})
+            end)
             -- end
-            vim.api.nvim_cmd({ cmd = "write", mods = { noautocmd = true } }, {})
           end
         end, 100)
         M.formatting[params.bufnr] = nil
