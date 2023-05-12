@@ -1,3 +1,5 @@
+local null_ls = require("null-ls")
+
 return {
   {
     "goolord/alpha-nvim",
@@ -52,41 +54,7 @@ return {
     event = "VeryLazy",
     dependencies = { "MunifTanjim/nui.nvim", "giusgad/hologram.nvim" },
     config = function(_, opts)
-      require("pets").setup(opts)
-    end,
-  },
-  {
-    "tamton-aquib/duck.nvim",
-    event = "VeryLazy",
-    config = function()
-      local d = require("duck")
-      local susus = {
-        { character = "ඞ", width = 1 },
-        { character = "🦊", width = 2 },
-        -- { character = "🦀", width = 2 },
-      }
-
-      vim.keymap.set("n", "<leader>ds", function()
-        local sus = susus[(vim.fn.rand() % #susus) + 1]
-
-        -- local settings = vim.tbl_extend("keep", sus, { speed = -(vim.fn.rand() % 900) })
-
-        -- d.setup(settings)
-
-        d.hatch()
-      end, { desc = "Spawn Amogus" })
-
-      vim.keymap.set("n", "<leader>dd", function()
-        if #d.ducks_list > 0 then
-          d.cook()
-        end
-      end, { desc = "Stub Amogus" })
-
-      vim.keymap.set("n", "<leader>dD", function()
-        while #d.ducks_list > 0 do
-          d.cook()
-        end
-      end, { desc = "Stub all Amoguses" })
+      require("user.pets").setup(opts)
     end,
   },
   {
@@ -287,7 +255,6 @@ return {
       },
       handlers = {
         stylua = function(_, _)
-          local null_ls = require("null-ls")
           null_ls.register(null_ls.builtins.formatting.stylua)
         end,
       },
@@ -304,9 +271,13 @@ return {
       -- Check supported formatters and linters
       -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/formatting
       -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/diagnostics
+
       opts.sources = {
         require("user.groovy_formatter").setup(),
         -- require("null-ls").builtins.diagnostics.tfsec,
+        null_ls.builtins.formatting.shfmt.with({
+          extra_args = { "-i", "2" },
+        }),
       }
       -- set up null-ls's on_attach function
       -- NOTE: You can remove this on attach function to disable format on save
