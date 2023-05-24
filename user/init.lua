@@ -143,7 +143,6 @@ return {
         },
       },
     },
-    skip_setup = { "rust_analyzer" },
     config = {
       lua_ls = function(config)
         local utils = require("astronvim.utils")

@@ -3,6 +3,7 @@ local utils = require("pets.utils")
 
 local M = {
   rocky = "rocky",
+  timer_enabled = false,
 }
 
 function M.generate_name()
@@ -60,6 +61,10 @@ function M.kill()
 end
 
 function M.timer()
+  if not M.timer_enabled then
+    return
+  end
+
   local timer = vim.loop.new_timer()
 
   timer:start(
