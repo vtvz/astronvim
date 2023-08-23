@@ -306,17 +306,10 @@ return {
               search_dirs = { node.path },
             })
           end,
-          copy_file_path = function(state)
-            local node = state.tree:get_node()
-            local path = vim.fn.fnamemodify(node.path, ":.")
-            vim.fn.setreg("+", path)
-            print("Copied path to current file: " .. path)
-          end,
         },
         window = {
           mappings = {
             ["w"] = "live_grep_directory",
-            ["<C-o>"] = "copy_file_path",
           },
         },
       },

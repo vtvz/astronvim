@@ -46,7 +46,7 @@ return {
       },
       ["<leader>C"] = { "<CMD>WipeAll<CR>", desc = "Wipe all buffers except current" },
       -- Copy current file relative path
-      ["<leader><C-o>"] = {
+      ["<leader>Yp"] = {
         function()
           local path = vim.fn.expand("%")
           path = vim.fn.fnamemodify(path, ":.")
@@ -55,6 +55,15 @@ return {
           print("Copied path to current file: " .. path)
         end,
         desc = "Copy current file relative path",
+      },
+      ["<leader>YP"] = {
+        function()
+          local path = vim.fn.expand("%")
+
+          vim.fn.setreg("+", path)
+          print("Copied path to current file: " .. path)
+        end,
+        desc = "Copy current file absolute path",
       },
       ["gK"] = {
         function()
