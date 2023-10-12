@@ -40,6 +40,7 @@ return function()
 
   vim.opt.matchpairs:append({ "<:>" })
   vim.opt.iskeyword:remove("_")
+  vim.opt.spell = true
 
   vim.api.nvim_create_user_command("Messages", function()
     local messages_output = vim.api.nvim_exec(":messages", true)
@@ -138,6 +139,8 @@ return function()
       vim.api.nvim_buf_set_option(buf, "keymap", "russian-jcukenwin")
       vim.api.nvim_buf_set_option(buf, "iminsert", 0)
       vim.api.nvim_buf_set_option(buf, "imsearch", -1)
+
+      vim.api.nvim_buf_set_option(buf, "spelloptions", "camel")
     end,
   })
 

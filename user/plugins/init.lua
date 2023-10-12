@@ -288,8 +288,47 @@ return {
     end,
   },
   {
+    "nicwest/vim-camelsnek",
+    event = "VeryLazy",
+  },
+  {
     "nvim-telescope/telescope.nvim",
-    opts = { cache_picker = { num_pickers = 5 } },
+    opts = {
+      cache_picker = { num_pickers = 5 },
+
+      pickers = {
+        find_files = {
+          mappings = {
+            n = {
+              ["<leader>fw"] = function(prompt_bufnr)
+                local current_picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
+                local opts = {
+                  default_text = current_picker:_get_prompt(),
+                }
+
+                require("telescope.actions").close(prompt_bufnr)
+                require("telescope.builtin").live_grep(opts)
+              end,
+            },
+          },
+        },
+        live_grep = {
+          mappings = {
+            n = {
+              ["<leader>ff"] = function(prompt_bufnr)
+                local current_picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
+                local opts = {
+                  default_text = current_picker:_get_prompt(),
+                }
+
+                require("telescope.actions").close(prompt_bufnr)
+                require("telescope.builtin").find_files(opts)
+              end,
+            },
+          },
+        },
+      },
+    },
   },
   {
     "nvim-neo-tree/neo-tree.nvim",
@@ -327,6 +366,22 @@ return {
     event = "VeryLazy",
     config = function(_, opts)
       require("todo-comments").setup(opts)
+    end,
+  },
+  {
+    "Wansmer/treesj",
+    keys = { "<space>m", "<space>M" },
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    config = function()
+      require("treesj").setup({
+        use_default_keymaps = false,
+      })
+      -- For use default preset and it work with dot
+      vim.keymap.set("n", "<leader>m", require("treesj").toggle)
+      -- For extending default preset with `recursive = true`, but this doesn't work with dot
+      vim.keymap.set("n", "<leader>M", function()
+        require("treesj").toggle({ split = { recursive = true } })
+      end)
     end,
   },
 }

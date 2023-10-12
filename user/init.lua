@@ -16,6 +16,8 @@ return {
       ["A"] = { "ggoG", desc = "Select All" },
     },
     n = {
+      ["]c"] = { "<cmd>:cnext<cr>", desc = "Next in quickfix" },
+      ["[c"] = { "<cmd>:cprevious<cr>", desc = "Previous in quickfix" },
       [ [[<c-'>]] ] = false,
       ["yA"] = { "ggVGy<C-O>", desc = "Yank whole page" },
       -- ["<leader>gg"] = {
