@@ -334,6 +334,19 @@ return {
     "nvim-neo-tree/neo-tree.nvim",
     opts = {
       filesystem = {
+        filtered_items = {
+          hide_gitignored = false,
+          always_show = {
+            ".gitignore",
+            ".env",
+          },
+          never_show = {
+            ".directory",
+          },
+          never_show_by_pattern = {
+            ".null-ls_*",
+          },
+        },
         commands = {
           live_grep_directory = function(state)
             local node = state.tree:get_node()
