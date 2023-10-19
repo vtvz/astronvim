@@ -1,25 +1,52 @@
 require("user.globals")
+local utils = require("user.utils")
 
 return {
   mappings = {
     v = {
       [">"] = { ">gv" },
       ["<"] = { "<gv" },
-      ["p"] = { "p :let @+=@0<cr>", desc = "Paste without trashing main registry" },
-      ["<leader>fc"] = {
+      ["p"] = { "P", desc = "Paste without trashing main registry" },
+      ["<leader>fw"] = {
         function()
-          require("telescope.builtin").grep_string()
+          local text = utils.get_visual_selection()
+
+          P(text)
+          require("telescope.builtin").live_grep({ default_text = text })
         end,
         desc = "Find for word under cursor",
       },
       ["<leader>pp"] = { "p", desc = "Paste" },
-      ["A"] = { "ggoG", desc = "Select All" },
+      ["A"] = {
+        function()
+          local mode = vim.api.nvim_get_mode()
+          if mode["mode"] == "v" then
+            vim.api.nvim_feedkeys("V", "normal", false)
+          end
+          vim.schedule(function()
+            vim.api.nvim_feedkeys("ggoG", "normal", false)
+          end)
+        end,
+        desc = "Select All",
+      },
     },
     n = {
+      ["x"] = { '"_x', desc = "Delete without pollution registry" },
       ["]c"] = { "<cmd>:cnext<cr>", desc = "Next in quickfix" },
       ["[c"] = { "<cmd>:cprevious<cr>", desc = "Previous in quickfix" },
       [ [[<c-'>]] ] = false,
-      ["yA"] = { "ggVGy<C-O>", desc = "Yank whole page" },
+      ["yA"] = {
+        function()
+          local win = vim.api.nvim_get_current_win()
+          local position = vim.api.nvim_win_get_cursor(win)
+          P(position)
+          vim.api.nvim_feedkeys("ggVGy", "normal", false)
+          vim.schedule(function()
+            vim.api.nvim_win_set_cursor(win, position)
+          end)
+        end,
+        desc = "Yank whole page",
+      },
       -- ["<leader>gg"] = {
       --   function()
       --     astronvim.toggle_term_cmd({ cmd = "lazygit", hidden = true, count = 150 })
@@ -158,9 +185,13 @@ return {
       lua_ls = function(config)
         local utils = require("astronvim.utils")
 
-        config.settings.Lua.workspace.library = utils.extend_tbl(config.settings.Lua.workspace.library, {
-          ["/home/vtvz/.local/share/Steam/steamapps/common/Don't Starve Together/data/databundles/"] = true,
-        })
+        -- ["/home/vtvz/.local/share/Steam/steamapps/common/Don't Starve Together/data/databundles/"] = true,
+
+        for _, lib in pairs(vim.api.nvim_get_runtime_file("", true)) do
+          config.settings.Lua.workspace.library = utils.extend_tbl(config.settings.Lua.workspace.library, {
+            [lib] = true,
+          })
+        end
         return config
       end,
     },

@@ -173,7 +173,7 @@ return function()
 
         vim.keymap.set("n", "q", "<CMD>cclose<CR>", { desc = "Close quicklist on q", buffer = buffer })
       else
-        vim.keymap.set("n", "<CR>", "o<Space><Esc>", { desc = "New line without entering insert", buffer = buffer })
+        vim.keymap.set("n", "<CR>", "o<Space><BS><Esc>", { desc = "New line without entering insert", buffer = buffer })
       end
     end,
   })

@@ -20,9 +20,12 @@ return {
   },
   require("user.plugins.heirline"),
   {
+    -- TODO: Consider to remove it
     "folke/neodev.nvim",
     lazy = false,
-    init = function()
+    cond = false,
+    opts = {},
+    config = function()
       local neodev = require("neodev")
       neodev.setup({
         override = function(_, library)
@@ -215,11 +218,11 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
-    dependencies = { "folke/neodev.nvim" },
+    -- dependencies = { "folke/neodev.nvim" },
   },
   {
     "williamboman/mason-lspconfig.nvim",
-    dependencies = { "folke/neodev.nvim" },
+    -- dependencies = { "folke/neodev.nvim" },
     build = ":MasonUpdate",
     opts = {
       ensure_installed = {
@@ -290,6 +293,29 @@ return {
   {
     "nicwest/vim-camelsnek",
     event = "VeryLazy",
+  },
+  {
+    "dahu/vim-fanfingtastic",
+    event = "VeryLazy",
+  },
+  {
+    "nvim-pack/nvim-spectre",
+    cmd = {
+      "Spectre",
+    },
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons" },
+    opts = {
+      -- open_cmd = "enew",
+      color_devicons = false,
+      mapping = {
+        ["replace_cmd"] = {
+          map = "<leader>rC",
+        },
+      },
+    },
+    config = function(plugin, opts)
+      require("spectre").setup(opts)
+    end,
   },
   {
     "nvim-telescope/telescope.nvim",
