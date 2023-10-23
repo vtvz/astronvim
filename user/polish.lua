@@ -93,43 +93,6 @@ return function()
     end,
   })
 
-  local function open_neotree(cur_win)
-    cur_win = cur_win or vim.api.nvim_get_current_win()
-
-    local _, err = pcall(vim.api.nvim_command, "Neotree action=show")
-    if err then
-      vim.defer_fn(function()
-        open_neotree(cur_win)
-      end, 100)
-
-      return
-    else
-      -- 961x1280
-      vim.api.nvim_set_current_win(cur_win)
-    end
-  end
-
-  vim.api.nvim_create_autocmd("VimEnter", {
-    desc = "On launch",
-    group = au,
-    callback = function()
-      vim.defer_fn(function()
-        open_neotree()
-      end, 100)
-    end,
-  })
-
-  vim.api.nvim_create_autocmd("User", {
-    desc = "On launch",
-    pattern = "SessionLoadPost",
-    group = au,
-    callback = function()
-      vim.defer_fn(function()
-        open_neotree()
-      end, 200)
-    end,
-  })
-
   vim.api.nvim_create_autocmd("BufAdd", {
     desc = "Add Russian Layout",
     group = au,

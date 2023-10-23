@@ -1,5 +1,4 @@
 require("user.globals")
-local utils = require("user.utils")
 
 return {
   mappings = {
@@ -9,9 +8,13 @@ return {
       ["p"] = { "P", desc = "Paste without trashing main registry" },
       ["<leader>fw"] = {
         function()
-          local text = utils.get_visual_selection()
+          -- https://github.com/nvim-telescope/telescope.nvim/pull/2333/files#diff-28bcf3ba7abec8e505297db6ed632962cbbec357328d4e0f6c6eca4fac1c0c48R170
 
-          P(text)
+          local saved_reg = vim.fn.getreg("v")
+          vim.cmd([[noautocmd sil norm "vy]])
+          local text = vim.fn.getreg("v")
+          vim.fn.setreg("v", saved_reg)
+
           require("telescope.builtin").live_grep({ default_text = text })
         end,
         desc = "Find for word under cursor",
