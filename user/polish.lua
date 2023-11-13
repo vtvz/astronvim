@@ -42,6 +42,12 @@ return function()
   vim.opt.iskeyword:remove("_")
   vim.opt.spell = true
 
+  vim.api.nvim_create_user_command("JenkinsValidate", function()
+    require("jenkinsfile_linter").validate()
+  end, { desc = "Validate Jenkinsfile" })
+
+  vim.api.nvim_cmd({ cmd = "highlight", args = { "NeoTreeGitIgnored", "guifg=#67859e" } }, {})
+
   vim.api.nvim_create_user_command("Messages", function()
     local messages_output = vim.api.nvim_exec(":messages", true)
 
