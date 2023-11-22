@@ -20,22 +20,6 @@ return {
   },
   require("user.plugins.heirline"),
   {
-    -- TODO: Consider to remove it
-    "folke/neodev.nvim",
-    lazy = false,
-    cond = false,
-    opts = {},
-    config = function()
-      local neodev = require("neodev")
-      neodev.setup({
-        override = function(_, library)
-          library.enabled = true
-          library.plugins = true
-        end,
-      })
-    end,
-  },
-  {
     "fatih/vim-go",
     event = "VeryLazy",
   },
@@ -49,15 +33,6 @@ return {
     after = "nvim-treesitter",
     config = function()
       require("tree-sitter-just").setup({})
-    end,
-  },
-  -- walkins amogus
-  {
-    "giusgad/pets.nvim",
-    event = "VeryLazy",
-    dependencies = { "MunifTanjim/nui.nvim", "giusgad/hologram.nvim" },
-    config = function(_, opts)
-      require("user.pets").setup(opts)
     end,
   },
   {
@@ -132,8 +107,6 @@ return {
       return opts
     end,
   },
-  { "milisims/nvim-luaref", lazy = false },
-  -- done
   {
     "simrat39/rust-tools.nvim",
     event = "VeryLazy",
@@ -189,7 +162,6 @@ return {
         "tsx",
         "typescript",
         "yaml",
-        -- "markdown",
       },
       context_commentstring = {
         enable = true,
@@ -318,45 +290,6 @@ return {
     end,
   },
   {
-    "nvim-telescope/telescope.nvim",
-    opts = {
-      cache_picker = { num_pickers = 5 },
-
-      pickers = {
-        find_files = {
-          mappings = {
-            n = {
-              ["<leader>fw"] = function(prompt_bufnr)
-                local current_picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
-                local opts = {
-                  default_text = current_picker:_get_prompt(),
-                }
-
-                require("telescope.actions").close(prompt_bufnr)
-                require("telescope.builtin").live_grep(opts)
-              end,
-            },
-          },
-        },
-        live_grep = {
-          mappings = {
-            n = {
-              ["<leader>ff"] = function(prompt_bufnr)
-                local current_picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
-                local opts = {
-                  default_text = current_picker:_get_prompt(),
-                }
-
-                require("telescope.actions").close(prompt_bufnr)
-                require("telescope.builtin").find_files(opts)
-              end,
-            },
-          },
-        },
-      },
-    },
-  },
-  {
     "nvim-neo-tree/neo-tree.nvim",
     opts = {
       filesystem = {
@@ -426,5 +359,11 @@ return {
   {
     "ckipp01/nvim-jenkinsfile-linter",
     dependencies = { "nvim-lua/plenary.nvim" },
+  },
+  {
+    "stevearc/dressing.nvim",
+    opts = {
+      select = { backend = { "builtin" } },
+    },
   },
 }

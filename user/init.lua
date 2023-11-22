@@ -1,5 +1,13 @@
 require("user.globals")
 
+local function current_picker_text()
+  local prompts = require("telescope.state").get_existing_prompt_bufnrs()
+  if #prompts == 1 then
+    local current_picker = require("telescope.actions.state").get_current_picker(prompts[1])
+    return current_picker:_get_prompt()
+  end
+end
+
 return {
   mappings = {
     v = {
@@ -34,6 +42,37 @@ return {
       },
     },
     n = {
+      ["<leader>ff"] = {
+        function()
+          require("telescope.builtin").find_files({ default_text = current_picker_text() })
+        end,
+      },
+      ["<leader>fF"] = {
+        function()
+          require("telescope.builtin").find_files({
+            default_text = current_picker_text(),
+            hidden = true,
+            no_ignore = true,
+          })
+        end,
+        desc = "Find all files",
+      },
+      ["<leader>fw"] = {
+        function()
+          require("telescope.builtin").live_grep({ default_text = current_picker_text() })
+        end,
+        desc = "Find words",
+      },
+      ["<leader>fW"] = {
+        function()
+          require("telescope.builtin").live_grep({
+            default_text = current_picker_text(),
+            additional_args = function(args)
+              return vim.list_extend(args, { "--hidden", "--no-ignore" })
+            end,
+          })
+        end,
+      },
       ["x"] = { '"_x', desc = "Delete without pollution registry" },
       ["]c"] = { "<cmd>:cnext<cr>", desc = "Next in quickfix" },
       ["[c"] = { "<cmd>:cprevious<cr>", desc = "Previous in quickfix" },
