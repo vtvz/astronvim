@@ -79,6 +79,7 @@ return function()
       vim.api.nvim_command(":%s/\\s\\+$//e")
       -- Remove ending lines
       pcall(vim.api.nvim_command, ":%s#\\($\\n\\s*\\)\\+\\%$##")
+      pcall(vim.api.nvim_command, ":%s#\\%^\\($\\n\\s*\\)\\+##")
     end,
   })
 
