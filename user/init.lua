@@ -42,6 +42,16 @@ return {
       },
     },
     n = {
+      ["<leader>ss"] = {
+        "<cmd>SessionManager! load_current_dir_session<cr>",
+        desc = "Load current directory session",
+      },
+      ["<leader>f<CR>"] = {
+        function()
+          require("telescope.builtin").pickers()
+        end,
+        desc = "Open recent pickers",
+      },
       ["<leader>ff"] = {
         function()
           require("telescope.builtin").find_files({ default_text = current_picker_text() })
@@ -115,7 +125,12 @@ return {
         end,
         desc = "Search workspace symbols",
       },
-      ["<leader>C"] = { "<CMD>WipeAll<CR>", desc = "Wipe all buffers except current" },
+      ["<leader>C"] = {
+        function()
+          require("astronvim.utils.buffer").close_all(true, false)
+        end,
+        desc = "Wipe all buffers except current",
+      },
       -- Copy current file relative path
       ["<leader>Yp"] = {
         function()
