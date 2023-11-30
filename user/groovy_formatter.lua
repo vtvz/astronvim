@@ -98,6 +98,14 @@ function M.on_attach(on_attach)
         buffer = attach_bufnr,
         callback = function(args)
           local bufnr = args.buf
+          if vim.b[bufnr].autoformat_enabled == nil then
+            vim.b[bufnr].autoformat_enabled = true
+          end
+
+          if not (vim.b[bufnr].autoformat_enabled and vim.g.autoformat_enabled) then
+            return
+          end
+
           M.formatting[bufnr] = true
           vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
 
