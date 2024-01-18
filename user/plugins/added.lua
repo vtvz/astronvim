@@ -7,14 +7,14 @@ return {
     "ray-x/lsp_signature.nvim",
     event = "LspAttach",
   },
-  {
-    "IndianBoy42/tree-sitter-just",
-    event = "VeryLazy",
-    after = "nvim-treesitter",
-    config = function()
-      require("tree-sitter-just").setup({})
-    end,
-  },
+  -- {
+  --   "IndianBoy42/tree-sitter-just",
+  --   event = "VeryLazy",
+  --   after = "nvim-treesitter",
+  --   config = function()
+  --     require("tree-sitter-just").setup({})
+  --   end,
+  -- },
   {
     "Joorem/vim-haproxy",
     event = "VeryLazy",
@@ -58,6 +58,10 @@ return {
   },
   {
     "nicwest/vim-camelsnek",
+    event = "VeryLazy",
+  },
+  {
+    "chaoren/vim-wordmotion",
     event = "VeryLazy",
   },
   {

@@ -95,7 +95,7 @@ return {
         "html",
         "javascript",
         "json",
-        "just",
+        -- "just",
         "lua",
         "python",
         "query",

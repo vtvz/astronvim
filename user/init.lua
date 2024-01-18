@@ -42,6 +42,10 @@ return {
       },
     },
     n = {
+      ["q:"] = {
+        "<cmd>quit<cr>",
+        desc = "Alternative to :q",
+      },
       ["<leader>ss"] = {
         "<cmd>SessionManager! load_current_dir_session<cr>",
         desc = "Load current directory session",

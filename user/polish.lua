@@ -39,7 +39,6 @@ return function()
   })
 
   vim.opt.matchpairs:append({ "<:>" })
-  vim.opt.iskeyword:remove("_")
   vim.opt.spell = true
 
   vim.api.nvim_create_user_command("JenkinsValidate", function()
