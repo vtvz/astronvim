@@ -88,6 +88,20 @@ return {
         end,
       },
       ["x"] = { '"_x', desc = "Delete without pollution registry" },
+      ["<C-a>"] = {
+        function()
+          local word = vim.fn.expand("<cword>")
+          if word == "true" then
+            vim.cmd('normal! "_ciw ' .. "false")
+          elseif word == "false" then
+            vim.cmd('normal! "_ciw ' .. "true")
+          else
+            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-a>", true, false, true), "n", false)
+          end
+        end,
+        desc = "Switch true and false or all ctrl+a stuff",
+        noremap = true,
+      },
       ["]c"] = { "<cmd>:cnext<cr>", desc = "Next in quickfix" },
       ["[c"] = { "<cmd>:cprevious<cr>", desc = "Previous in quickfix" },
       [ [[<c-'>]] ] = false,
@@ -138,38 +152,11 @@ return {
         end,
         desc = "Search references",
       },
-      -- replace with dynamic because plain sucks
-      ["<leader>lG"] = {
-        function()
-          require("telescope.builtin").lsp_dynamic_workspace_symbols()
-        end,
-        desc = "Search workspace symbols",
-      },
       ["<leader>C"] = {
         function()
           require("astronvim.utils.buffer").close_all(true, false)
         end,
         desc = "Wipe all buffers except current",
-      },
-      -- Copy current file relative path
-      ["<leader>Yp"] = {
-        function()
-          local path = vim.fn.expand("%")
-          path = vim.fn.fnamemodify(path, ":.")
-
-          vim.fn.setreg("+", path)
-          print("Copied path to current file: " .. path)
-        end,
-        desc = "Copy current file relative path",
-      },
-      ["<leader>YP"] = {
-        function()
-          local path = vim.fn.expand("%")
-
-          vim.fn.setreg("+", path)
-          print("Copied path to current file: " .. path)
-        end,
-        desc = "Copy current file absolute path",
       },
       ["gK"] = {
         function()
@@ -195,31 +182,20 @@ return {
         end,
         desc = "Previous buffer",
       },
-      -- A personal trick for my workspace setup
-      ["<leader>t<C-'>"] = {
-        function()
-          local Job = require("plenary.job")
-          local Terminal = require("toggleterm.terminal").Terminal
-
-          Job:new({
-            command = "just",
-            args = { "ws", "profiles" },
-            on_exit = vim.schedule_wrap(function(j, _)
-              local result = vim.fn.join(j:result())
-              local profiles = vim.fn.json_decode(result)
-
-              for i, profile in ipairs(profiles) do
-                local zsh = Terminal:new({ cmd = "just ws profile '" .. profile .. "' just ws zsh", count = i })
-                zsh:spawn()
-              end
-            end),
-          }):sync(5000)
-        end,
-        desc = "Spawn terminals with profiles",
-      },
     },
   },
   lsp = {
+    mappings = {
+      n = {
+        -- replace with dynamic because plain sucks
+        ["<leader>lg"] = {
+          function()
+            require("telescope.builtin").lsp_dynamic_workspace_symbols()
+          end,
+          desc = "Search workspace symbols",
+        },
+      },
+    },
     setup_handlers = {
       -- add custom handler
       rust_analyzer = function(_, opts)
