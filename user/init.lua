@@ -92,9 +92,9 @@ return {
         function()
           local word = vim.fn.expand("<cword>")
           if word == "true" then
-            vim.cmd('normal! "_ciw ' .. "false")
+            vim.cmd('normal! "_ciw' .. "false")
           elseif word == "false" then
-            vim.cmd('normal! "_ciw ' .. "true")
+            vim.cmd('normal! "_ciw' .. "true")
           else
             vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-a>", true, false, true), "n", false)
           end
