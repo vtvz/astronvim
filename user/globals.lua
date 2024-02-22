@@ -25,3 +25,6 @@ RELOAD = function(...)
 
   return require(modules[1])
 end
+
+-- backwards compatibility
+table.unpack = table.unpack or unpack

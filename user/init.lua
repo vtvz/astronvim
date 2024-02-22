@@ -40,6 +40,9 @@ return {
         end,
         desc = "Select All",
       },
+      ["gX"] = {
+        require("git_srcr").open_visual,
+      },
     },
     n = {
       ["q:"] = {
@@ -105,6 +108,12 @@ return {
       ["]c"] = { "<cmd>:cnext<cr>", desc = "Next in quickfix" },
       ["[c"] = { "<cmd>:cprevious<cr>", desc = "Previous in quickfix" },
       [ [[<c-'>]] ] = false,
+      ["gX"] = {
+        require("git_srcr").open_normal,
+      },
+      ["yX"] = {
+        require("git_srcr").yank_normal,
+      },
       ["yA"] = {
         function()
           local win = vim.api.nvim_get_current_win()
