@@ -47,7 +47,7 @@ end
 function M.yank_normal()
   local current_line, _ = table.unpack(vim.api.nvim_win_get_cursor(0))
 
-  local link = M.generate_link(current_line)
+  local link = M.generate_link(current_line, current_line)
 
   M.copy_link(link)
 end
