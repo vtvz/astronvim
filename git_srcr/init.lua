@@ -32,7 +32,7 @@ function M.open_normal()
   M.open_link(link)
 end
 
-function M.open_visual()
+function M.yank_and_open_visual()
   local _, col_one = table.unpack(vim.fn.getpos("v"))
 
   local _, col_two = table.unpack(vim.fn.getpos("."))
@@ -40,6 +40,8 @@ function M.open_visual()
   table.sort(cols)
 
   local link = M.generate_link(cols[1], cols[2])
+
+  M.copy_link(link)
 
   M.open_link(link)
 end

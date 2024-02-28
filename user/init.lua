@@ -41,7 +41,7 @@ return {
         desc = "Select All",
       },
       ["gX"] = {
-        require("git_srcr").open_visual,
+        require("git_srcr").yank_and_open_visual,
       },
     },
     n = {
