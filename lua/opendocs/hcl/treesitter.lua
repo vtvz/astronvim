@@ -1,6 +1,9 @@
 local M = {
   handlers = {
     attribute = function(item, name)
+      if name == "" then
+        return item.captures.attribute.text
+      end
       return name .. "." .. item.captures.attribute.text
     end,
 
@@ -17,6 +20,11 @@ local M = {
       if item.captures.type.text == "variable" then
         return "var." .. item.captures.resource.text, true
       end
+
+      if item.captures.type.text == "module" then
+        return "module." .. item.captures.resource.text, false
+      end
+
       return item.captures.resource.text, true
     end,
 

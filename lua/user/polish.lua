@@ -1,8 +1,8 @@
 return function()
   vim.filetype.add({
     extension = {
-      tf = "terraform",
-      tfvars = "hcl",
+      --   tf = "terraform",
+      tfvars = "terraform",
     },
     pattern = {
       [".*/Dockerfile.*"] = "dockerfile",
