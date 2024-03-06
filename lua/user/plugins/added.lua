@@ -115,4 +115,20 @@ return {
     "ckipp01/nvim-jenkinsfile-linter",
     dependencies = { "nvim-lua/plenary.nvim" },
   },
+  -- {
+  --   "ThePrimeagen/harpoon",
+  --   branch = "harpoon2",
+  --   dependencies = { "nvim-lua/plenary.nvim" },
+  --   config = function(_, opts)
+  --     local harpoon = require("harpoon")
+  --
+  --     -- REQUIRED
+  --     harpoon:setup(opts)
+  --     harpoon.ui:toggle_quick_menu(harpoon:list())
+  --   end,
+  -- },
+  {
+    "AstroNvim/astrocommunity",
+    { import = "astrocommunity.motion.harpoon" },
+  },
 }
