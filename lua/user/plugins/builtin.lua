@@ -229,10 +229,30 @@ return {
               search_dirs = { node.path },
             })
           end,
+          git_srcr_open = function(state)
+            local node = state.tree:get_node()
+            if not node then
+              return
+            end
+            local path = vim.fn.fnamemodify(node.path, ":.")
+            local link = require("git_srcr").generate_link(path, -1, -1)
+            require("git_srcr").open_link(link)
+          end,
+          git_srcr_yank = function(state)
+            local node = state.tree:get_node()
+            if not node then
+              return
+            end
+            local path = vim.fn.fnamemodify(node.path, ":.")
+            local link = require("git_srcr").generate_link(path, -1, -1)
+            require("git_srcr").yank_link(link)
+          end,
         },
         window = {
           mappings = {
             ["w"] = "live_grep_directory",
+            ["gX"] = "git_srcr_open",
+            ["X"] = "git_srcr_yank",
           },
         },
       },
