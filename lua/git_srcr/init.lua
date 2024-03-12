@@ -6,6 +6,16 @@ local M = {
   },
 }
 
+function M.git_command(args)
+  local Job = require("plenary.job")
+
+  return Job:new({
+    command = "git",
+    args = args,
+  })
+    :sync()[1]
+end
+
 function M.open_link(link)
   if link then
     require("astronvim.utils").system_open(link)
@@ -27,7 +37,8 @@ end
 function M.open_normal()
   local current_line, _ = table.unpack(vim.api.nvim_win_get_cursor(0))
 
-  local link = M.generate_link(current_line, current_line)
+  local file = vim.fn.expand("%:.")
+  local link = M.generate_link(file, current_line, current_line)
 
   M.open_link(link)
 end
@@ -39,7 +50,8 @@ function M.yank_and_open_visual()
   local cols = { col_one, col_two }
   table.sort(cols)
 
-  local link = M.generate_link(cols[1], cols[2])
+  local file = vim.fn.expand("%:.")
+  local link = M.generate_link(file, cols[1], cols[2])
 
   M.copy_link(link)
 
@@ -49,42 +61,22 @@ end
 function M.yank_normal()
   local current_line, _ = table.unpack(vim.api.nvim_win_get_cursor(0))
 
-  local link = M.generate_link(current_line, current_line)
+  local file = vim.fn.expand("%:.")
+  local link = M.generate_link(file, current_line, current_line)
 
   M.copy_link(link)
 end
 
-function M.generate_link(start_line, end_line)
-  local Job = require("plenary.job")
-
-  local remote = Job:new({
-    command = "git",
-    args = { "remote" },
-  })
-    :sync()[1]
+function M.generate_link(file, start_line, end_line)
+  local remote = M.git_command({ "remote" })
 
   if not remote or remote == "" then
     return
   end
 
-  local url = Job:new({
-    command = "git",
-    args = { "remote", "get-url", remote },
-  })
-    :sync()[1]
+  local url = M.git_command({ "remote", "get-url", remote })
 
-  local commit_hash = Job:new({
-    command = "git",
-    args = { "rev-parse", "HEAD" },
-  })
-    :sync()[1]
-
-  local current_file = vim.fn.expand("%:.")
-  local commit_hash = Job:new({
-    command = "git",
-    args = { "log", "--pretty=tformat:%H", "-n1", current_file },
-  })
-    :sync()[1]
+  local commit_hash = M.git_command({ "log", "--pretty=tformat:%H", "-n1", file })
 
   -- SSH protocol
   local _, _, host, workspace, repo = unpack(vim.fn.matchlist(url, [[^\(.*\)@\(.*\):\(.*\)\/\(.*\)\.git$]]))
@@ -100,7 +92,7 @@ function M.generate_link(start_line, end_line)
   local pattern = M.patterns[host]
 
   if pattern then
-    return string.format(pattern, host, workspace, repo, commit_hash, current_file, start_line, end_line)
+    return string.format(pattern, host, workspace, repo, commit_hash, file, start_line, end_line)
   end
 end
 
