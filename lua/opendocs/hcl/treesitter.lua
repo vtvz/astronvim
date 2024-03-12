@@ -16,6 +16,10 @@ local M = {
       return ret
     end,
 
+    variable_expr = function(item)
+      return item.captures.root.text, true
+    end,
+
     variable = function(item)
       if item.captures.type.text == "variable" then
         return "var." .. item.captures.resource.text, true
