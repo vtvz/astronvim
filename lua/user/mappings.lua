@@ -40,7 +40,10 @@ return {
       desc = "Select All",
     },
     ["gX"] = {
-      require("git_srcr").yank_and_open_visual,
+      require("git_srcr").open,
+    },
+    ["X"] = {
+      require("git_srcr").yank,
     },
     ["<M-j>"] = {
       [[:m '>+1<CR>gv=gv]],
@@ -132,10 +135,10 @@ return {
     ["[c"] = { "<cmd>:cprevious<cr>", desc = "Previous in quickfix" },
     [ [[<c-'>]] ] = false,
     ["gX"] = {
-      require("git_srcr").open_normal,
+      require("git_srcr").open,
     },
     ["yX"] = {
-      require("git_srcr").yank_normal,
+      require("git_srcr").yank,
     },
     ["yA"] = {
       function()

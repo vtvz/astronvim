@@ -235,7 +235,7 @@ return {
               return
             end
             local path = vim.fn.fnamemodify(node.path, ":.")
-            local link = require("git_srcr").generate_link(path, -1, -1)
+            local link = require("git_srcr").generate_link(path)
             require("git_srcr").open_link(link)
           end,
           git_srcr_yank = function(state)
@@ -244,7 +244,7 @@ return {
               return
             end
             local path = vim.fn.fnamemodify(node.path, ":.")
-            local link = require("git_srcr").generate_link(path, -1, -1)
+            local link = require("git_srcr").generate_link(path)
             require("git_srcr").yank_link(link)
           end,
         },
