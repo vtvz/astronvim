@@ -36,3 +36,8 @@
 (
   (expression (variable_expr)) @root (#set! "type" "variable_expr")
 )
+
+; object key
+(
+  (object_elem key: (expression (variable_expr (identifier) @key))) @root (#set! "type" "object_key")
+)

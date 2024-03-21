@@ -6,9 +6,6 @@ local function current_picker_text()
   end
 end
 return {
-  t = {
-    ["<Esc><Esc>"] = { "<C-\\><C-n>" },
-  },
   v = {
     [">"] = { ">gv" },
     ["<"] = { "<gv" },
@@ -133,7 +130,7 @@ return {
     },
     ["]c"] = { "<cmd>:cnext<cr>", desc = "Next in quickfix" },
     ["[c"] = { "<cmd>:cprevious<cr>", desc = "Previous in quickfix" },
-    [ [[<c-'>]] ] = false,
+    -- [ [[<c-'>]] ] = false,
     ["gX"] = {
       require("git_srcr").open,
     },

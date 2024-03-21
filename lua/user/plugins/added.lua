@@ -128,7 +128,23 @@ return {
   --   end,
   -- },
   {
-    "AstroNvim/astrocommunity",
-    { import = "astrocommunity.motion.harpoon" },
+    "michaelrommel/nvim-silicon",
+    lazy = true,
+    cmd = "Silicon",
+    config = function()
+      require("silicon").setup({
+        font = "FiraCode Nerd Font Mono",
+        to_clipboard = true,
+        no_window_controls = true,
+        line_offset = function(args)
+          return args.line1
+        end,
+        pad_horiz = 10,
+        pad_vert = 10,
+        window_title = function()
+          return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()), ":.")
+        end,
+      })
+    end,
   },
 }

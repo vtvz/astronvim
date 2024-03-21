@@ -1,44 +1,44 @@
+local common = require("git_srcr.common")
+
+local astro_utils = function()
+  return require("astronvim.utils")
+end
+
 local M = {
   patterns = {
     ["bitbucket.org"] = {
-      "https://%s/%s/%s/src/%s/%s",
-      "#lines-%s",
-      "#lines-%s:%s",
+      "https://${host}/${workspace}/${repo}/src/${commit_hash}/${file_path}",
+      "#lines-${start}",
+      "#lines-${start}:${end}",
     },
     ["github.com"] = {
-      "https://%s/%s/%s/blob/%s/%s",
-      "#L%s",
-      "#L%s-L%s",
+      "https://${host}/${workspace}/${repo}/blob/${commit_hash}/${file_path}",
+      "#L${start}",
+      "#L${start}-L${end}",
     },
-    ["gitlab.com"] = { "https://%s/%s/%s/-/blob/%s/%s", "#L%s", "#L%s-%s" },
+    ["gitlab.com"] = {
+      "https://${host}/${workspace}/${repo}/-/blob/${commit_hash}/${file_path}",
+      "#L${start}",
+      "#L${start}-${end}",
+    },
   },
 }
 
-function M.git_command(args)
-  local Job = require("plenary.job")
-
-  return Job:new({
-    command = "git",
-    args = args,
-  })
-    :sync()[1]
-end
-
 function M.open_link(link)
   if link then
-    require("astronvim.utils").system_open(link)
+    astro_utils().system_open(link)
   else
-    require("astronvim.utils").notify("No link generated")
+    astro_utils().notify("No link generated")
   end
 end
 
 function M.yank_link(link)
   if link then
-    require("astronvim.utils").notify("Coplied link to git repo")
+    astro_utils().notify("Coplied link to git repo")
 
     vim.fn.setreg("+", link)
   else
-    require("astronvim.utils").notify("No link generated")
+    astro_utils().notify("No link generated")
   end
 end
 
@@ -78,36 +78,30 @@ function M.yank()
   M.yank_link(link)
 end
 
-function M.generate_link(file, start_line, end_line)
-  local remote = M.git_command({ "remote" })
+function M.generate_link(file_path, start_line, end_line)
+  local remote = common.git_command({ "remote" })
 
   if not remote or remote == "" then
     return
   end
 
-  local url = M.git_command({ "remote", "get-url", remote })
+  local url = common.git_command({ "remote", "get-url", remote })
 
-  local commit_hash = M.git_command({ "log", "--pretty=tformat:%h", "-n1", file })
+  local commit_hash = common.git_command({ "log", "--pretty=tformat:%h", "-n1", file_path })
 
-  -- SSH protocol
-  local _, _, host, workspace, repo = unpack(vim.fn.matchlist(url, [[^\(.*\)@\(.*\):\(.*\)\/\(.*\)\.git$]]))
-  -- HTTP protocol
-  if not repo then
-    _, host, workspace, repo = unpack(vim.fn.matchlist(url, [[^https\?://\(.*\)\/\(.*\)/\(.*\)$]]))
-  end
-
-  if not repo then
-    return
-  end
+  local host, workspace, repo = common.get_host_workstace_repo(url)
 
   local pattern = M.patterns[host]
 
   if pattern then
-    local result = string.format(pattern[1], host, workspace, repo, commit_hash, file)
+    local result = require("user.utils").interpolate(
+      pattern[1],
+      { host = host, workspace = workspace, repo = repo, commit_hash = commit_hash, file_path = file_path }
+    )
     if start_line and (not end_line or start_line == end_line) then
-      result = result .. string.format(pattern[2], start_line)
+      result = result .. require("user.utils").interpolate(pattern[2], { start = start_line })
     elseif start_line then
-      result = result .. string.format(pattern[3], start_line, end_line)
+      result = result .. require("user.utils").interpolate(pattern[3], { start = start_line, ["end"] = end_line })
     end
     return result
   end

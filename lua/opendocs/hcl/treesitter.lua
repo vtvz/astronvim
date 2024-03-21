@@ -1,5 +1,9 @@
 local M = {
   handlers = {
+    object_key = function(item, name)
+      return name .. "." .. item.captures.key.text
+    end,
+
     attribute = function(item, name)
       if name == "" then
         return item.captures.attribute.text
