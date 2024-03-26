@@ -9,10 +9,31 @@ end
 local M = {
   providers = {
     ["bitbucket.org"] = function(workspace, repo, branch)
-      local token = vim.fn.getenv("BITBUCKET_API_TOKEN")
+      local token = os.getenv("BITBUCKET_API_TOKEN")
+      local basic = os.getenv("BITBUCKET_BASIC_AUTH")
 
-      if not token then
-        error("provide token with BITBUCKET_API_TOKEN env variable")
+      local open_new_pr = function()
+        astro_utils().system_open(
+          utils.interpolate(
+            "https://bitbucket.org/${workspace}/${repo}/pull-requests/new?source=${branch}&t=1",
+            { workspace = workspace, repo = repo, branch = branch }
+          )
+        )
+      end
+
+      if not token and not basic then
+        print(
+          "provide token with BITBUCKET_API_TOKEN or basic auth with BITBUCKET_BASIC_AUTH env variable to have comprehensive bitbucket integration"
+        )
+        open_new_pr()
+        return
+      end
+
+      if token then
+        P(token)
+        token = {
+          Authorization = "Bearer " .. token,
+        }
       end
 
       local result = require("plenary.curl").get({
@@ -23,20 +44,14 @@ local M = {
         query = {
           q = string.format('(source.branch.name="%s")', branch),
         },
-        headers = {
-          Authorization = "Bearer " .. token,
-        },
+        auth = basic,
+        headers = token,
       })
 
       local pr_data = vim.fn.json_decode(result.body).values[1]
 
       if not pr_data then
-        astro_utils().system_open(
-          utils.interpolate(
-            "https://bitbucket.org/${workspace}/${repo}/pull-requests/new?source=${branch}&t=1",
-            { workspace = workspace, repo = repo, branch = branch }
-          )
-        )
+        open_new_pr()
         return
       end
 
