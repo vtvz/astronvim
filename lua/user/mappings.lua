@@ -116,11 +116,23 @@ return {
     ["x"] = { '"_x', desc = "Delete without pollution registry" },
     ["<C-a>"] = {
       function()
-        local word = vim.fn.expand("<cword>")
-        if word == "true" then
-          vim.cmd('normal! "_ciw' .. "false")
-        elseif word == "false" then
-          vim.cmd('normal! "_ciw' .. "true")
+        local words = {
+          ["true"] = "false",
+          ["false"] = "true",
+          ["qa"] = "prod",
+          ["prod"] = "qa",
+          ["=="] = "!=",
+          ["!="] = "==",
+        }
+        local cword = vim.fn.expand("<cword>")
+        local word = words[cword]
+        local cWORD = vim.fn.expand("<cWORD>")
+        local WORD = words[cWORD]
+
+        if word then
+          vim.cmd('normal! "_ciw' .. word)
+        elseif WORD then
+          vim.cmd('normal! "_ciW' .. WORD)
         else
           vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-a>", true, false, true), "n", false)
         end
