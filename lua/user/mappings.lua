@@ -120,22 +120,47 @@ return {
           ["true"] = "false",
           ["false"] = "true",
           ["qa"] = "prod",
-          ["prod"] = "qa",
+          ["prod"] = "pre-prod-v2",
+          ["get"] = "set",
+          ["set"] = "get",
           ["=="] = "!=",
           ["!="] = "==",
+          ["elseif"] = "if",
+          ["if"] = "else",
+          ["pre-prod-v2"] = "qa",
+          ["ADD"] = "COPY",
         }
-        local cword = vim.fn.expand("<cword>")
-        local word = words[cword]
-        local cWORD = vim.fn.expand("<cWORD>")
-        local WORD = words[cWORD]
 
-        if word then
-          vim.cmd('normal! "_ciw' .. word)
-        elseif WORD then
-          vim.cmd('normal! "_ciW' .. WORD)
-        else
-          vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-a>", true, false, true), "n", false)
+        for _, mod in ipairs({ "w", "W", '"', "'" }) do
+          local prev = vim.fn.getreg("v")
+          vim.cmd('normal! "vyi' .. mod)
+          local cword = vim.fn.getreg("v")
+          vim.fn.setreg("v", prev)
+
+          local word = words[cword]
+
+          if word then
+            vim.cmd('normal! "_ci' .. mod .. word)
+            return
+          end
         end
+
+        local complex = {
+          ["pre-prod-v2"] = "qa",
+        }
+
+        local cur_line = vim.api.nvim_get_current_line()
+        for from, to in pairs(complex) do
+          local replaced = vim.fn.substitute(cur_line, from, to, "g")
+
+          if cur_line ~= replaced then
+            vim.api.nvim_set_current_line(replaced)
+            vim.notify("Complex")
+            return
+          end
+        end
+
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-a>", true, false, true), "n", false)
       end,
       desc = "Switch true and false or all ctrl+a stuff",
       noremap = true,
