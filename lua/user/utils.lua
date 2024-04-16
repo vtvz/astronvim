@@ -20,4 +20,14 @@ function M.interpolate(template, variables)
   end))
 end
 
+function M.get_visual_range()
+  local _, row_one = table.unpack(vim.fn.getpos("v"))
+
+  local _, row_two = table.unpack(vim.fn.getpos("."))
+  local rows = { row_one, row_two }
+  table.sort(rows)
+
+  return rows[1], rows[2]
+end
+
 return M

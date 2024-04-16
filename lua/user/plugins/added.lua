@@ -147,4 +147,8 @@ return {
       })
     end,
   },
+  {
+    "wellle/targets.vim",
+    event = "VeryLazy",
+  },
 }

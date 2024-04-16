@@ -1,4 +1,5 @@
 local common = require("git_srcr.common")
+local utils = require("user.utils")
 
 local astro_utils = function()
   return require("astronvim.utils")
@@ -54,13 +55,9 @@ function M.file_and_range()
 
     return file, current_line
   elseif mode == "v" or mode == "V" then
-    local _, row_one = table.unpack(vim.fn.getpos("v"))
+    local start, finish = utils.get_visual_range()
 
-    local _, row_two = table.unpack(vim.fn.getpos("."))
-    local rows = { row_one, row_two }
-    table.sort(rows)
-
-    return file, rows[1], rows[2]
+    return file, start, finish
   end
 end
 

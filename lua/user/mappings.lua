@@ -23,7 +23,7 @@ return {
       end,
       desc = "Find for word under cursor",
     },
-    ["<leader>pp"] = { "p", desc = "Paste" },
+    -- ["<leader>pp"] = { "p", desc = "Paste" },
     ["A"] = {
       function()
         local mode = vim.api.nvim_get_mode()
@@ -36,11 +36,20 @@ return {
       end,
       desc = "Select All",
     },
-    ["gX"] = {
+    ["<leader>vgx"] = {
       require("git_srcr").open,
     },
-    ["X"] = {
+    ["<leader>vyx"] = {
       require("git_srcr").yank,
+    },
+    ["<leader>vys"] = {
+      function()
+        local start, finish = require("user.utils").get_visual_range()
+        vim.cmd(string.format(":%d,%dSilicon", start, finish))
+      end,
+      noremap = true,
+      silent = true,
+      expr = false,
     },
     ["<M-j>"] = {
       [[:m '>+1<CR>gv=gv]],
@@ -132,10 +141,20 @@ return {
         }
 
         for _, mod in ipairs({ "w", "W", '"', "'" }) do
-          local prev = vim.fn.getreg("v")
+          -- mark current location and yank in "something"
+          -- then restore prev mark and reg
+          local prev_reg = vim.fn.getreg("v")
+          local prev_row, prev_col = table.unpack(vim.api.nvim_buf_get_mark(0, "v"))
+          vim.cmd("normal! mv")
           vim.cmd('normal! "vyi' .. mod)
+          vim.cmd("normal! `v")
+          if prev_row == 0 then
+            vim.api.nvim_buf_del_mark(0, "v")
+          else
+            vim.api.nvim_buf_set_mark(0, "v", prev_row, prev_col, {})
+          end
           local cword = vim.fn.getreg("v")
-          vim.fn.setreg("v", prev)
+          vim.fn.setreg("v", prev_reg)
 
           local word = words[cword]
 
@@ -168,11 +187,14 @@ return {
     ["]c"] = { "<cmd>:cnext<cr>", desc = "Next in quickfix" },
     ["[c"] = { "<cmd>:cprevious<cr>", desc = "Previous in quickfix" },
     -- [ [[<c-'>]] ] = false,
-    ["gX"] = {
+    ["<leader>vgx"] = {
       require("git_srcr").open,
     },
-    ["yX"] = {
+    ["<leader>vyx"] = {
       require("git_srcr").yank,
+    },
+    ["<leader>vys"] = {
+      "<Cmd>Silicon<CR>",
     },
     ["yA"] = {
       function()
@@ -193,10 +215,10 @@ return {
     --   desc = "ToggleTerm lazygit",
     -- },
     ["<leader>w"] = { "<cmd>wa<cr>", desc = "Save" },
-    ["<leader>v"] = {
-      require("justjump").popup,
-      desc = "N'th buffer",
-    },
+    -- ["<leader>v"] = {
+    --   require("justjump").popup,
+    --   desc = "N'th buffer",
+    -- },
     ["<leader>uf"] = {
       function()
         require("astronvim.utils.ui").toggle_buffer_autoformat()

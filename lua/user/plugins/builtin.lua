@@ -251,8 +251,8 @@ return {
         window = {
           mappings = {
             ["w"] = "live_grep_directory",
-            ["gX"] = "git_srcr_open",
-            ["X"] = "git_srcr_yank",
+            ["<leader>vgx"] = "git_srcr_open",
+            ["<leader>vyx"] = "git_srcr_yank",
           },
         },
       },
