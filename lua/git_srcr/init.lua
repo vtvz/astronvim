@@ -27,9 +27,9 @@ local M = {
 
 function M.open_link(link)
   if link then
-    astro_utils().system_open(link)
+    utils.system_open(link)
   else
-    astro_utils().notify("No link generated")
+    utils.notify("No link generated")
   end
 end
 

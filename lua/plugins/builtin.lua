@@ -18,7 +18,6 @@ return {
       }
     end,
   },
-  require("user.plugins.heirline"),
   {
     "nvim-treesitter/playground",
     cmd = {
@@ -59,7 +58,7 @@ return {
     "rcarriga/nvim-notify",
     event = "UIEnter",
     config = function(plugin, opts)
-      require("plugins.configs.notify")(plugin, opts)
+      require("astronvim.plugins.configs.notify")(plugin, opts)
 
       local banned_messages = {
         "Accessing client.resolved_capabilities is deprecated",
@@ -154,10 +153,6 @@ return {
   },
   {
     "jay-babu/mason-null-ls.nvim",
-    dependencies = {
-      "williamboman/mason.nvim",
-      "jose-elias-alvarez/null-ls.nvim",
-    },
     opts = {
       ensure_installed = {
         "hadolint",
@@ -173,12 +168,9 @@ return {
         end,
       },
     },
-    config = function(plugin, opts)
-      require("plugins.configs.mason-null-ls")(plugin, opts)
-    end,
   },
   {
-    "jose-elias-alvarez/null-ls.nvim",
+    "nvimtools/none-ls.nvim",
     opts = function(plugin, opts) -- overrides `require("null-ls").setup(config)`
       -- config variable is the default configuration table for the setup functino call
 

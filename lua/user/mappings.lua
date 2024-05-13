@@ -5,12 +5,13 @@ local function current_picker_text()
     return current_picker:_get_prompt()
   end
 end
+
 return {
   v = {
     [">"] = { ">gv" },
     ["<"] = { "<gv" },
     ["p"] = { "P", desc = "Paste without trashing main registry" },
-    ["<leader>fw"] = {
+    ["<Leader>fw"] = {
       function()
         -- https://github.com/nvim-telescope/telescope.nvim/pull/2333/files#diff-28bcf3ba7abec8e505297db6ed632962cbbec357328d4e0f6c6eca4fac1c0c48R170
 
@@ -23,7 +24,7 @@ return {
       end,
       desc = "Find for word under cursor",
     },
-    -- ["<leader>pp"] = { "p", desc = "Paste" },
+    -- ["<Leader>pp"] = { "p", desc = "Paste" },
     ["A"] = {
       function()
         local mode = vim.api.nvim_get_mode()
@@ -36,13 +37,13 @@ return {
       end,
       desc = "Select All",
     },
-    ["<leader>vgx"] = {
+    ["<Leader>vgx"] = {
       require("git_srcr").open,
     },
-    ["<leader>vyx"] = {
+    ["<Leader>vyx"] = {
       require("git_srcr").yank,
     },
-    ["<leader>vys"] = {
+    ["<Leader>vys"] = {
       function()
         local start, finish = require("user.utils").get_visual_range()
         vim.cmd(string.format(":%d,%dSilicon", start, finish))
@@ -81,22 +82,24 @@ return {
       "<cmd>quit<cr>",
       desc = "Alternative to :q",
     },
-    ["<leader>ss"] = {
-      "<cmd>SessionManager! load_current_dir_session<cr>",
+    ["<Leader>ss"] = {
+      function()
+        require("resession").load(vim.fn.getcwd(), { dir = "dirsession", silence_errors = true })
+      end,
       desc = "Load current directory session",
     },
-    ["<leader>f<CR>"] = {
+    ["<Leader>f<CR>"] = {
       function()
         require("telescope.builtin").pickers()
       end,
       desc = "Open recent pickers",
     },
-    ["<leader>ff"] = {
+    ["<Leader>ff"] = {
       function()
         require("telescope.builtin").find_files({ default_text = current_picker_text() })
       end,
     },
-    ["<leader>fF"] = {
+    ["<Leader>fF"] = {
       function()
         require("telescope.builtin").find_files({
           default_text = current_picker_text(),
@@ -106,13 +109,14 @@ return {
       end,
       desc = "Find all files",
     },
-    ["<leader>fw"] = {
+    ["<Leader>fw"] = {
       function()
+        print("no2")
         require("telescope.builtin").live_grep({ default_text = current_picker_text() })
       end,
       desc = "Find words",
     },
-    ["<leader>fW"] = {
+    ["<Leader>fW"] = {
       function()
         require("telescope.builtin").live_grep({
           default_text = current_picker_text(),
@@ -191,13 +195,13 @@ return {
     ["]c"] = { "<cmd>:cnext<cr>", desc = "Next in quickfix" },
     ["[c"] = { "<cmd>:cprevious<cr>", desc = "Previous in quickfix" },
     -- [ [[<c-'>]] ] = false,
-    ["<leader>vgx"] = {
+    ["<Leader>vgx"] = {
       require("git_srcr").open,
     },
-    ["<leader>vyx"] = {
+    ["<Leader>vyx"] = {
       require("git_srcr").yank,
     },
-    ["<leader>vys"] = {
+    ["<Leader>vys"] = {
       "<Cmd>Silicon<CR>",
     },
     ["yA"] = {
@@ -212,26 +216,26 @@ return {
       end,
       desc = "Yank whole page",
     },
-    -- ["<leader>gg"] = {
+    -- ["<Leader>gg"] = {
     --   function()
     --     astronvim.toggle_term_cmd({ cmd = "lazygit", hidden = true, count = 150 })
     --   end,
     --   desc = "ToggleTerm lazygit",
     -- },
-    ["<leader>w"] = { "<cmd>wa<cr>", desc = "Save" },
-    -- ["<leader>v"] = {
+    ["<Leader>w"] = { "<cmd>wa<cr>", desc = "Save" },
+    -- ["<Leader>v"] = {
     --   require("justjump").popup,
     --   desc = "N'th buffer",
     -- },
-    ["<leader>uf"] = {
+    ["<Leader>uf"] = {
       function()
-        require("astronvim.utils.ui").toggle_buffer_autoformat()
+        require("user.utils").toggle_buffer_autoformat()
       end,
       desc = "Toggle autoformatting (buffer)",
     },
-    ["<leader>uF"] = {
+    ["<Leader>uF"] = {
       function()
-        require("astronvim.utils.ui").toggle_autoformat()
+        require("user.utils").toggle_autoformat()
       end,
       desc = "Toggle autoformatting (global)",
     },
@@ -241,15 +245,15 @@ return {
       end,
       desc = "Search references",
     },
-    ["<leader>fl"] = {
+    ["<Leader>fl"] = {
       function()
         require("telescope.builtin").pickers()
       end,
       desc = "Search references",
     },
-    ["<leader>C"] = {
+    ["<Leader>C"] = {
       function()
-        require("astronvim.utils.buffer").close_all(true, false)
+        require("user.utils").buffer_close_all()
       end,
       desc = "Wipe all buffers except current",
     },
@@ -267,13 +271,13 @@ return {
     },
     ["L"] = {
       function()
-        require("astronvim.utils.buffer").nav(vim.v.count > 0 and vim.v.count or 1)
+        require("user.utils").buffer_navigate_next()
       end,
       desc = "Next buffer",
     },
     ["H"] = {
       function()
-        require("astronvim.utils.buffer").nav(-(vim.v.count > 0 and vim.v.count or 1))
+        require("user.utils").buffer_navigate_prev()
       end,
       desc = "Previous buffer",
     },
