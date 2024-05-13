@@ -8,6 +8,9 @@ local M = {
     terraform = function()
       return require("opendocs.hcl")
     end,
+    json = function()
+      return require("opendocs.json")
+    end,
   },
   warn = function(msg)
     vim.notify(msg, vim.log.levels.WARN, { title = "OpenDocs" })

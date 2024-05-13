@@ -138,6 +138,10 @@ return {
           ["if"] = "else",
           ["pre-prod-v2"] = "qa",
           ["ADD"] = "COPY",
+          ["const"] = "let",
+          ["let"] = "const",
+          ["async"] = "await",
+          ["await"] = "async",
         }
 
         for _, mod in ipairs({ "w", "W", '"', "'" }) do
