@@ -43,6 +43,7 @@ return {
     -- customize language server configuration options passed to `lspconfig`
     ---@diagnostic disable: missing-fields
     config = {
+      --[[
       lua_ls = function(config)
         local utils = require("astronvim.utils")
 
@@ -55,6 +56,7 @@ return {
         end
         return config
       end,
+      ]]
     },
     -- customize how language servers are attached
     handlers = {
