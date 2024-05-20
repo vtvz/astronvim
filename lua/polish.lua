@@ -80,6 +80,13 @@ vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
   end,
 })
 
+vim.api.nvim_create_autocmd({ "BufLeave", "BufEnter" }, {
+  group = au,
+  callback = function()
+    vim.o.statuscolumn = vim.o.statuscolumn
+  end,
+})
+
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   desc = "Enter to newline functionality",
   group = au,
@@ -97,7 +104,19 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 
       vim.keymap.set("n", "q", "<CMD>cclose<CR>", { desc = "Close quicklist on q", buffer = buffer })
     else
-      vim.keymap.set("n", "<CR>", "o<Space><BS><Esc>", { desc = "New line without entering insert", buffer = buffer })
+      local is_keymap_set = function(mode, key)
+        local map = vim.api.nvim_buf_get_keymap(buffer, mode)
+        for _, mapping in ipairs(map) do
+          if mapping.lhs == key then
+            return true
+          end
+        end
+        return false
+      end
+
+      if not is_keymap_set("n", "<CR>") then
+        vim.keymap.set("n", "<CR>", "o<Space><BS><Esc>", { desc = "New line without entering insert", buffer = buffer })
+      end
     end
   end,
 })

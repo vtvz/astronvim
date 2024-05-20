@@ -25,6 +25,24 @@ return {
       status.component.mode({ surround = { separator = "right" } }),
     }
 
+    opts.statuscolumn = {
+      init = function(self)
+        self.bufnr = vim.api.nvim_get_current_buf()
+      end,
+      {
+        provider = function()
+          if require("user.utils").neotree_is_open() or vim.bo.ft == "alpha" then
+            return ""
+          end
+
+          return "                               "
+        end,
+      },
+      status.component.foldcolumn(),
+      status.component.numbercolumn(),
+      status.component.signcolumn(),
+    }
+
     return opts
   end,
 }

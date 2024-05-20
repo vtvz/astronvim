@@ -1,4 +1,18 @@
-local M = {}
+local M = {
+  _neotree_open = false,
+}
+
+function M.neotree_open()
+  M._neotree_open = true
+end
+
+function M.neotree_close()
+  M._neotree_open = true
+end
+
+function M.neotree_is_open()
+  return M._neotree_open
+end
 
 function M.shorten(url)
   local curl = require("plenary.curl")
