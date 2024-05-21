@@ -7,11 +7,23 @@ function M.neotree_open()
 end
 
 function M.neotree_close()
-  M._neotree_open = true
+  M._neotree_open = false
 end
 
 function M.neotree_is_open()
   return M._neotree_open
+end
+
+function M.status_column_padding()
+  return {
+    provider = function()
+      if M.neotree_is_open() or vim.bo.ft == "alpha" then
+        return ""
+      end
+
+      return string.rep(" ", 31)
+    end,
+  }
 end
 
 function M.shorten(url)

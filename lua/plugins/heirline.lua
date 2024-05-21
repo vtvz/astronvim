@@ -29,15 +29,7 @@ return {
       init = function(self)
         self.bufnr = vim.api.nvim_get_current_buf()
       end,
-      {
-        provider = function()
-          if require("user.utils").neotree_is_open() or vim.bo.ft == "alpha" then
-            return ""
-          end
-
-          return "                               "
-        end,
-      },
+      require("user.utils").status_column_padding(),
       status.component.foldcolumn(),
       status.component.numbercolumn(),
       status.component.signcolumn(),
