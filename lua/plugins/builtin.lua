@@ -205,16 +205,6 @@ return {
       select = { backend = { "builtin" } },
     },
   },
-  {
-    "nvim-telescope/telescope.nvim",
-    opts = {
-      defaults = {
-        cache_picker = {
-          num_pickers = 10,
-        },
-      },
-    },
-  },
   --[[
   {
     "AstroNvim/astrocommunity",

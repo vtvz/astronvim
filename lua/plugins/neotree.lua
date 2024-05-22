@@ -1,71 +1,85 @@
 return {
-  "nvim-neo-tree/neo-tree.nvim",
-  opts = {
-    event_handlers = {
-      {
-        event = "neo_tree_window_after_open",
-        handler = function()
-          require("user.utils").neotree_open()
-        end,
+  {
+    "stevearc/oil.nvim",
+    opts = {
+      buf_options = {
+        buflisted = true,
+        bufhidden = "hide",
       },
-      {
-        event = "neo_tree_window_before_close",
-        handler = function()
-          require("user.utils").neotree_close()
-        end,
-      },
+      delete_to_trash = true,
     },
-    filesystem = {
-      filtered_items = {
-        hide_gitignored = false,
-        always_show = {
-          ".gitignore",
+    -- Optional dependencies
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    opts = {
+      event_handlers = {
+        {
+          event = "neo_tree_window_after_open",
+          handler = function()
+            require("user.utils").neotree_open()
+          end,
         },
-        always_show_by_pattern = {
-          ".env*",
-        },
-        never_show = {
-          ".directory",
-        },
-        never_show_by_pattern = {
-          ".null-ls_*",
+        {
+          event = "neo_tree_window_before_close",
+          handler = function()
+            require("user.utils").neotree_close()
+          end,
         },
       },
-      commands = {
-        live_grep_directory = function(state)
-          local node = state.tree:get_node()
-          if node.type ~= "directory" then
-            return
-          end
+      filesystem = {
+        filtered_items = {
+          hide_gitignored = false,
+          always_show = {
+            ".gitignore",
+          },
+          always_show_by_pattern = {
+            ".env*",
+          },
+          never_show = {
+            ".directory",
+          },
+          never_show_by_pattern = {
+            ".null-ls_*",
+          },
+        },
+        commands = {
+          live_grep_directory = function(state)
+            local node = state.tree:get_node()
+            if node.type ~= "directory" then
+              return
+            end
 
-          require("telescope.builtin").live_grep({
-            search_dirs = { node.path },
-          })
-        end,
-        git_srcr_open = function(state)
-          local node = state.tree:get_node()
-          if not node then
-            return
-          end
-          local path = vim.fn.fnamemodify(node.path, ":.")
-          local link = require("git_srcr").generate_link(path)
-          require("git_srcr").open_link(link)
-        end,
-        git_srcr_yank = function(state)
-          local node = state.tree:get_node()
-          if not node then
-            return
-          end
-          local path = vim.fn.fnamemodify(node.path, ":.")
-          local link = require("git_srcr").generate_link(path)
-          require("git_srcr").yank_link(link)
-        end,
-      },
-      window = {
-        mappings = {
-          ["w"] = "live_grep_directory",
-          ["<leader>vgx"] = "git_srcr_open",
-          ["<leader>vyx"] = "git_srcr_yank",
+            require("telescope.builtin").live_grep({
+              search_dirs = { node.path },
+            })
+          end,
+          git_srcr_open = function(state)
+            local node = state.tree:get_node()
+            if not node then
+              return
+            end
+            local path = vim.fn.fnamemodify(node.path, ":.")
+            local link = require("git_srcr").generate_link(path)
+            require("git_srcr").open_link(link)
+          end,
+          git_srcr_yank = function(state)
+            local node = state.tree:get_node()
+            if not node then
+              return
+            end
+            local path = vim.fn.fnamemodify(node.path, ":.")
+            local link = require("git_srcr").generate_link(path)
+            require("git_srcr").yank_link(link)
+          end,
+        },
+        window = {
+          mappings = {
+            ["w"] = "live_grep_directory",
+            ["<leader>vgx"] = "git_srcr_open",
+            ["<leader>vyx"] = "git_srcr_yank",
+          },
         },
       },
     },

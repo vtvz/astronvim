@@ -96,7 +96,11 @@ return {
     },
     ["<Leader>ff"] = {
       function()
-        require("telescope.builtin").find_files({ default_text = current_picker_text() })
+        -- require("telescope.builtin").find_files({ default_text = current_picker_text() })
+        require("telescope").extensions.frecency.frecency({
+          workspace = "CWD",
+          default_text = current_picker_text(),
+        })
       end,
     },
     ["<Leader>fF"] = {
