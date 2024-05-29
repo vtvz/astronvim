@@ -26,9 +26,11 @@ return {
         status.component.mode({ surround = { separator = "right" } }),
       }
 
+      --[[
       table.insert(opts.statuscolumn, 1, require("user.utils").status_column_padding())
       table.insert(opts.tabline, 1, require("user.utils").status_column_padding())
       table.insert(opts.winbar[1], 1, require("user.utils").status_column_padding())
+      ]]
 
       return opts
     end,
