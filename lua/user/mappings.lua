@@ -62,6 +62,30 @@ return {
     },
   },
   n = {
+    ["<Leader>-"] = { "<CMD>Oil<CR>", desc = "Open parent directory" },
+    ["<Leader>fd"] = {
+      function()
+        local action_state = require("telescope.actions.state")
+        local actions = require("telescope.actions")
+
+        require("telescope.builtin").find_files({
+          find_command = { "find", ".", "-type", "d" },
+
+          attach_mappings = function(prompt_bufnr, map)
+            actions.select_default:replace(function()
+              actions.close(prompt_bufnr)
+              local selection = action_state.get_selected_entry()
+
+              require("telescope.builtin").find_files({
+                search_dirs = { selection[1] },
+              })
+            end)
+
+            return true
+          end,
+        })
+      end,
+    },
     ["<M-j>"] = {
       [[:m .+1<CR>==]],
       noremap = true,
@@ -96,11 +120,7 @@ return {
     },
     ["<Leader>ff"] = {
       function()
-        -- require("telescope.builtin").find_files({ default_text = current_picker_text() })
-        require("telescope").extensions.frecency.frecency({
-          workspace = "CWD",
-          default_text = current_picker_text(),
-        })
+        require("telescope.builtin").find_files({ default_text = current_picker_text() })
       end,
     },
     ["<Leader>fF"] = {
@@ -261,7 +281,7 @@ return {
       end,
       desc = "Wipe all buffers except current",
     },
-    ["gK"] = {
+    ["<Leader>vgK"] = {
       function()
         require("opendocs").open()
       end,
