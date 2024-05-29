@@ -1,18 +1,7 @@
 return {
   {
-    "stevearc/oil.nvim",
-    opts = {
-      buf_options = {
-        buflisted = true,
-        bufhidden = "hide",
-      },
-      delete_to_trash = true,
-    },
-    -- Optional dependencies
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-  },
-  {
     "nvim-neo-tree/neo-tree.nvim",
+    enabled = false,
     opts = {
       event_handlers = {
         {
