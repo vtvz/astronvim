@@ -11,7 +11,6 @@ vim.filetype.add({
 })
 
 vim.opt.matchpairs:append({ "<:>" })
-vim.opt.spell = true
 
 vim.api.nvim_create_user_command("JenkinsValidate", function()
   require("jenkinsfile_linter").validate()

@@ -30,6 +30,9 @@ return {
         cmdheight = 1,
         title = true,
         exrc = true,
+        spell = true,
+        sidescroll = 10,
+        sidescrolloff = 5,
       },
     },
 
