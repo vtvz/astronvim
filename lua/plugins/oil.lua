@@ -12,6 +12,9 @@ return {
   {
     "stevearc/oil.nvim",
     opts = {
+      view_options = {
+        show_hidden = true,
+      },
       keymaps = {
         ["Y"] = function()
           local dir = require("oil").get_current_dir()
