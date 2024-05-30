@@ -81,7 +81,6 @@ end
 
 function M.on_attach(on_attach)
   return function(client, attach_bufnr)
-    -- P(client)
     if not vim.tbl_contains(M.filetypes, vim.bo[attach_bufnr].filetype) then
       on_attach(client, attach_bufnr)
       return
@@ -102,7 +101,7 @@ function M.on_attach(on_attach)
             vim.b[bufnr].autoformat_enabled = true
           end
 
-          if not (vim.b[bufnr].autoformat_enabled and vim.g.autoformat_enabled) then
+          if not require("user.utils").do_autoformat_buffer(bufnr) then
             return
           end
 

@@ -18,7 +18,6 @@ return {
       }
     end,
   },
-  require("user.plugins.heirline"),
   {
     "nvim-treesitter/playground",
     cmd = {
@@ -59,7 +58,7 @@ return {
     "rcarriga/nvim-notify",
     event = "UIEnter",
     config = function(plugin, opts)
-      require("plugins.configs.notify")(plugin, opts)
+      require("astronvim.plugins.configs.notify")(plugin, opts)
 
       local banned_messages = {
         "Accessing client.resolved_capabilities is deprecated",
@@ -154,10 +153,6 @@ return {
   },
   {
     "jay-babu/mason-null-ls.nvim",
-    dependencies = {
-      "williamboman/mason.nvim",
-      "jose-elias-alvarez/null-ls.nvim",
-    },
     opts = {
       ensure_installed = {
         "hadolint",
@@ -173,12 +168,9 @@ return {
         end,
       },
     },
-    config = function(plugin, opts)
-      require("plugins.configs.mason-null-ls")(plugin, opts)
-    end,
   },
   {
-    "jose-elias-alvarez/null-ls.nvim",
+    "nvimtools/none-ls.nvim",
     opts = function(plugin, opts) -- overrides `require("null-ls").setup(config)`
       -- config variable is the default configuration table for the setup functino call
 
@@ -202,63 +194,6 @@ return {
     end,
   },
   {
-    "nvim-neo-tree/neo-tree.nvim",
-    opts = {
-      filesystem = {
-        filtered_items = {
-          hide_gitignored = false,
-          always_show = {
-            ".gitignore",
-            ".env",
-          },
-          never_show = {
-            ".directory",
-          },
-          never_show_by_pattern = {
-            ".null-ls_*",
-          },
-        },
-        commands = {
-          live_grep_directory = function(state)
-            local node = state.tree:get_node()
-            if node.type ~= "directory" then
-              return
-            end
-
-            require("telescope.builtin").live_grep({
-              search_dirs = { node.path },
-            })
-          end,
-          git_srcr_open = function(state)
-            local node = state.tree:get_node()
-            if not node then
-              return
-            end
-            local path = vim.fn.fnamemodify(node.path, ":.")
-            local link = require("git_srcr").generate_link(path)
-            require("git_srcr").open_link(link)
-          end,
-          git_srcr_yank = function(state)
-            local node = state.tree:get_node()
-            if not node then
-              return
-            end
-            local path = vim.fn.fnamemodify(node.path, ":.")
-            local link = require("git_srcr").generate_link(path)
-            require("git_srcr").yank_link(link)
-          end,
-        },
-        window = {
-          mappings = {
-            ["w"] = "live_grep_directory",
-            ["<leader>vgx"] = "git_srcr_open",
-            ["<leader>vyx"] = "git_srcr_yank",
-          },
-        },
-      },
-    },
-  },
-  {
     "akinsho/toggleterm.nvim",
     opts = {
       -- open_mapping = [[<c-'>]],
@@ -268,16 +203,6 @@ return {
     "stevearc/dressing.nvim",
     opts = {
       select = { backend = { "builtin" } },
-    },
-  },
-  {
-    "nvim-telescope/telescope.nvim",
-    opts = {
-      defaults = {
-        cache_picker = {
-          num_pickers = 10,
-        },
-      },
     },
   },
   --[[

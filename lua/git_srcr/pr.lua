@@ -2,10 +2,6 @@ local utils = require("user.utils")
 
 local common = require("git_srcr.common")
 
-local astro_utils = function()
-  return require("astronvim.utils")
-end
-
 local M = {
   providers = {
     ["bitbucket.org"] = function(workspace, repo, branch)
@@ -13,7 +9,7 @@ local M = {
       local basic = os.getenv("BITBUCKET_BASIC_AUTH")
 
       local open_new_pr = function()
-        astro_utils().system_open(
+        utils.system_open(
           utils.interpolate(
             "https://bitbucket.org/${workspace}/${repo}/pull-requests/new?source=${branch}&t=1",
             { workspace = workspace, repo = repo, branch = branch }
@@ -30,7 +26,6 @@ local M = {
       end
 
       if token then
-        P(token)
         token = {
           Authorization = "Bearer " .. token,
         }
@@ -55,7 +50,7 @@ local M = {
         return
       end
 
-      astro_utils().system_open(pr_data.links.html.href)
+      utils.system_open(pr_data.links.html.href)
     end,
   },
 }

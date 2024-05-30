@@ -55,8 +55,8 @@ function M.ts_match(query, node, root_name)
     for id, capture in pairs(item) do
       local name = query.captures[id]
       captures[name] = {
-        node = capture,
-        text = vim.treesitter.get_node_text(capture, 0),
+        node = capture[1],
+        text = vim.treesitter.get_node_text(capture[1], 0),
         metadata = metadata[id] or {},
       }
     end
