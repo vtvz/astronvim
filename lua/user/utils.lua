@@ -17,7 +17,7 @@ end
 function M.status_column_padding()
   return {
     provider = function()
-      if M.neotree_is_open() or vim.bo.ft == "alpha" then
+      if M.neotree_is_open() or not vim.bo.buflisted then
         return ""
       end
 
@@ -96,6 +96,70 @@ function M.do_autoformat_buffer(bufnr)
   end
 
   return autoformat
+end
+
+function M.copy_filename(filepath)
+  local modify = vim.fn.fnamemodify
+
+  local actions = {
+    { key = "BASE", value = modify(filepath, ":t:r") },
+    { key = "EXT ", value = modify(filepath, ":t:e") },
+    { key = "NAME", value = modify(filepath, ":t") },
+    { key = "CWD ", value = modify(filepath, ":.") },
+    { key = "HOME", value = modify(filepath, ":~") },
+    { key = "FULL", value = filepath },
+    { key = "URI ", value = vim.uri_from_fname(filepath) },
+    {
+      key = "GIT ",
+      value = function()
+        local path = vim.fn.fnamemodify(filepath, ":.")
+        return require("git_srcr").generate_link(path)
+      end,
+    },
+  }
+
+  local action_keys = {}
+  local action_index = {}
+
+  for k, v in ipairs(actions) do
+    action_keys[k] = v.key
+    action_index[v.key] = v
+  end
+
+  local function get_action_value(action_key)
+    local value = action_index[action_key].value
+    if type(value) == "function" then
+      return value()
+    end
+    return value
+  end
+
+  vim.ui.select(action_keys, {
+    prompt = "Choose to copy to clipboard:",
+    format_item = function(action_key)
+      local value = action_index[action_key].value
+      if type(value) == "function" then
+        value = "<will be calculated>"
+      end
+      local limit = 61
+
+      if #value > 61 then
+        value = value:sub(0, limit - 3 - math.floor(limit * 0.6)) .. "..." .. value:sub(-math.floor(limit * 0.6))
+      end
+
+      return ("%s: %s"):format(action_key, value)
+    end,
+  }, function(action_key)
+    if not action_index[action_key] then
+      return
+    end
+
+    local result = get_action_value(action_key)
+    if result then
+      require("user.utils").notify(("Copied: `%s`"):format(result))
+      vim.fn.setreg("+", result)
+    end
+  end)
 end
 
 return M

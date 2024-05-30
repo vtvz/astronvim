@@ -53,6 +53,19 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
+vim.api.nvim_create_autocmd("QuitPre", {
+  pattern = "*",
+  callback = function()
+    local terminals = require("toggleterm.terminal").get_all()
+    if #terminals > 0 then
+      vim.cmd("tabe " .. vim.fn.expand("%:p"))
+      vim.cmd("tabclose #")
+      require("toggleterm").toggle(terminals[1].id)
+      vim.api.nvim_err_writeln("There are opened terminal sessions: " .. #terminals)
+    end
+  end,
+})
+
 vim.api.nvim_create_autocmd("BufAdd", {
   desc = "Add Russian Layout",
   group = au,

@@ -228,6 +228,11 @@ return {
     ["<Leader>vys"] = {
       "<Cmd>Silicon<CR>",
     },
+    ["<Leader>vyf"] = {
+      function()
+        require("user.utils").copy_filename(vim.fn.expand("%:p"))
+      end,
+    },
     ["yA"] = {
       function()
         local win = vim.api.nvim_get_current_win()
