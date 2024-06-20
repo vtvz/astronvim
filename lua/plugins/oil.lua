@@ -36,10 +36,10 @@ return {
           })
         end,
       },
-      buf_options = {
+      --[[ buf_options = {
         buflisted = true,
         bufhidden = "hide",
-      },
+      }, ]]
       delete_to_trash = true,
     },
     -- Optional dependencies

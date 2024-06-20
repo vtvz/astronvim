@@ -31,7 +31,7 @@ return {
         title = true,
         exrc = true,
         spell = true,
-        sidescroll = 10,
+        scrolloff = 10,
         sidescrolloff = 5,
       },
     },

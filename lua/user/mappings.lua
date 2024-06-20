@@ -6,21 +6,89 @@ local function current_picker_text()
   end
 end
 
+-- https://github.com/nvim-telescope/telescope.nvim/pull/2333/files#diff-28bcf3ba7abec8e505297db6ed632962cbbec357328d4e0f6c6eca4fac1c0c48R170
+local function visual_selected_text()
+  local saved_reg = vim.fn.getreg("v")
+  vim.cmd([[noautocmd sil norm "vy]])
+  local text = vim.fn.getreg("v")
+  vim.fn.setreg("v", saved_reg)
+
+  return text
+end
+
 return {
+  t = {
+    ["<C-\\><C-[>"] = {
+      function()
+        local focused_id = require("toggleterm.terminal").get_focused_id()
+
+        local terminals = require("toggleterm.terminal").get_all()
+
+        if #terminals > 0 and focused_id then
+          local focused_index = nil
+          for index, terminal in ipairs(terminals) do
+            if focused_id == terminal.id then
+              focused_index = index
+              break
+            end
+          end
+
+          local to_focus = terminals[#terminals].id
+          if terminals[focused_index - 1] then
+            to_focus = terminals[focused_index - 1].id
+          end
+
+          if to_focus ~= focused_id then
+            require("toggleterm").toggle(to_focus)
+            vim.schedule(function()
+              require("toggleterm.terminal").get(to_focus):set_mode("i")
+            end)
+          end
+        end
+      end,
+    },
+    ["<C-\\><C-]>"] = {
+      function()
+        local focused_id = require("toggleterm.terminal").get_focused_id()
+
+        local terminals = require("toggleterm.terminal").get_all()
+
+        if #terminals > 0 and focused_id then
+          local focused_index = nil
+          for index, terminal in ipairs(terminals) do
+            if focused_id == terminal.id then
+              focused_index = index
+              break
+            end
+          end
+
+          local to_focus = terminals[1].id
+          if terminals[focused_index + 1] then
+            to_focus = terminals[focused_index + 1].id
+          end
+          if to_focus ~= focused_id then
+            require("toggleterm").toggle(to_focus)
+            vim.schedule(function()
+              require("toggleterm.terminal").get(to_focus):set_mode("i")
+            end)
+          end
+        end
+      end,
+    },
+  },
   v = {
     [">"] = { ">gv" },
     ["<"] = { "<gv" },
     ["p"] = { "P", desc = "Paste without trashing main registry" },
     ["<Leader>fw"] = {
       function()
-        -- https://github.com/nvim-telescope/telescope.nvim/pull/2333/files#diff-28bcf3ba7abec8e505297db6ed632962cbbec357328d4e0f6c6eca4fac1c0c48R170
-
-        local saved_reg = vim.fn.getreg("v")
-        vim.cmd([[noautocmd sil norm "vy]])
-        local text = vim.fn.getreg("v")
-        vim.fn.setreg("v", saved_reg)
-
-        require("telescope.builtin").live_grep({ default_text = text })
+        require("telescope.builtin").live_grep({ default_text = visual_selected_text() })
+      end,
+      desc = "Find for word under cursor",
+    },
+    ["<Leader>ff"] = {
+      function()
+        require("telescope.builtin").find_files({ default_text = visual_selected_text() })
       end,
       desc = "Find for word under cursor",
     },
@@ -76,7 +144,7 @@ return {
               actions.close(prompt_bufnr)
               local selection = action_state.get_selected_entry()
 
-              require("telescope.builtin").find_files({
+              require("telescope.builtin").live_grep({
                 search_dirs = { selection[1] },
               })
             end)

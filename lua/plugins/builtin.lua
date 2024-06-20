@@ -157,7 +157,7 @@ return {
       ensure_installed = {
         "hadolint",
         "nginx-language-server",
-        "prettierd",
+        "prettier",
         "shellcheck",
         "shfmt",
         "stylua",

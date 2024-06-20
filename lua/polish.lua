@@ -61,6 +61,8 @@ vim.api.nvim_create_autocmd("QuitPre", {
       vim.cmd("tabe " .. vim.fn.expand("%:p"))
       vim.cmd("tabclose #")
       require("toggleterm").toggle(terminals[1].id)
+
+      require("toggleterm.terminal").get(terminals[1].id):set_mode("i")
       vim.api.nvim_err_writeln("There are opened terminal sessions: " .. #terminals)
     end
   end,
@@ -72,11 +74,11 @@ vim.api.nvim_create_autocmd("BufAdd", {
   callback = function()
     local buf = tonumber(vim.fn.expand("<abuf>"))
 
-    vim.api.nvim_buf_set_option(buf, "keymap", "russian-jcukenwin")
-    vim.api.nvim_buf_set_option(buf, "iminsert", 0)
-    vim.api.nvim_buf_set_option(buf, "imsearch", -1)
+    vim.api.nvim_set_option_value("keymap", "russian-jcukenwin", { buf = buf })
+    vim.api.nvim_set_option_value("iminsert", 0, { buf = buf })
+    vim.api.nvim_set_option_value("imsearch", -1, { buf = buf })
 
-    vim.api.nvim_buf_set_option(buf, "spelloptions", "camel")
+    vim.api.nvim_set_option_value("spelloptions", "camel", { buf = buf })
   end,
 })
 
@@ -104,7 +106,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   group = au,
   callback = function()
     local buffer = tonumber(vim.fn.expand("<abuf>"))
-    local ft = vim.api.nvim_buf_get_option(buffer, "filetype")
+    local ft = vim.api.nvim_get_option_value("filetype", { buf = buffer })
 
     if ft == "qf" then
       vim.keymap.set(

@@ -61,7 +61,7 @@ return {
     -- customize how language servers are attached
     handlers = {
       -- add custom handler
-      rust_analyzer = function(_, opts)
+      --[[ rust_analyzer = function(_, opts)
         local rt = require("rust-tools")
 
         local rt_config = {
@@ -81,7 +81,7 @@ return {
         rt.setup(rt_config)
 
         rt.inlay_hints.enable()
-      end,
+      end, ]]
     },
     -- Configure buffer local auto commands to add when attaching a language server
     autocmds = {
@@ -143,12 +143,12 @@ return {
     -- A custom `on_attach` function to be run after the default `on_attach` function
     -- takes two parameters `client` and `bufnr`  (`:h lspconfig-setup`)
     on_attach = function(client, bufnr)
-      if client.name == "rust_analyzer" then
+      --[[ if client.name == "rust_analyzer" then
         local rt = require("rust-tools")
 
         vim.keymap.set("n", "K", rt.hover_actions.hover_actions, { buffer = bufnr })
         vim.keymap.set("n", "J", rt.join_lines.join_lines, { buffer = bufnr })
-      end
+      end ]]
 
       require("lsp_signature").on_attach({
         floating_window = false,
