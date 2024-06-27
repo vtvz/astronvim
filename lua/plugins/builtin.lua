@@ -131,45 +131,6 @@ return {
     },
   },
   {
-    "williamboman/mason-lspconfig.nvim",
-    -- dependencies = { "folke/neodev.nvim" },
-    build = ":MasonUpdate",
-    opts = {
-      ensure_installed = {
-        "ansiblels",
-        "dockerls",
-        "eslint",
-        "html",
-        "jdtls",
-        "jsonls",
-        "jsonnet_ls",
-        "lua_ls",
-        "rust_analyzer",
-        "terraformls",
-        "tflint",
-        "tsserver",
-      },
-    },
-  },
-  {
-    "jay-babu/mason-null-ls.nvim",
-    opts = {
-      ensure_installed = {
-        "hadolint",
-        "nginx-language-server",
-        "prettier",
-        "shellcheck",
-        "shfmt",
-        "stylua",
-      },
-      handlers = {
-        stylua = function(_, _)
-          null_ls.register(null_ls.builtins.formatting.stylua)
-        end,
-      },
-    },
-  },
-  {
     "nvimtools/none-ls.nvim",
     opts = function(plugin, opts) -- overrides `require("null-ls").setup(config)`
       -- config variable is the default configuration table for the setup functino call

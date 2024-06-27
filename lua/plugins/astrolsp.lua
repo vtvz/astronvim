@@ -38,11 +38,14 @@ return {
     },
     -- enable servers that you already have installed without mason
     servers = {
-      -- "pyright"
+      "tflint",
     },
     -- customize language server configuration options passed to `lspconfig`
     ---@diagnostic disable: missing-fields
     config = {
+      tflint = {
+        cmd = { "tflint", "--langserver", "--config", "/home/vtvz/.tflint.d/tflint.hcl" },
+      },
       --[[
       lua_ls = function(config)
         local utils = require("astronvim.utils")

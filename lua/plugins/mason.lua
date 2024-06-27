@@ -13,8 +13,25 @@ return {
     opts = function(_, opts)
       -- add more things to the ensure_installed table protecting against community packs modifying it
       opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed, {
+        "ansiblels",
+        "dockerls",
+        "eslint",
+        "html",
+        "jdtls",
+        "jsonls",
+        "jsonnet_ls",
         "lua_ls",
-        -- add more arguments for adding more language servers
+        "rust_analyzer",
+        "terraformls",
+        "tsserver",
+      })
+
+      require("mason-lspconfig").setup_handlers({
+        -- Next, you can provide a dedicated handler for specific servers.
+        -- For example, a handler override for the `rust_analyzer`:
+        ["tflint"] = function()
+          require("rust-tools").setup({})
+        end,
       })
     end,
   },
@@ -25,9 +42,12 @@ return {
     opts = function(_, opts)
       -- add more things to the ensure_installed table protecting against community packs modifying it
       opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed, {
+        "hadolint",
+        "nginx-language-server",
         "prettier",
+        "shellcheck",
+        "shfmt",
         "stylua",
-        -- add more arguments for adding more null-ls sources
       })
     end,
   },
@@ -37,7 +57,7 @@ return {
     opts = function(_, opts)
       -- add more things to the ensure_installed table protecting against community packs modifying it
       opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed, {
-        "python",
+        -- "python",
         -- add more arguments for adding more debuggers
       })
     end,

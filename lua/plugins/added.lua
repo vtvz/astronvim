@@ -45,16 +45,13 @@ return {
     "declancm/cinnamon.nvim",
     event = "VeryLazy",
     opts = {
-      default_delay = 1,
+      options = {
+        delay = 1,
+      },
     },
     config = function(_, opts)
       require("cinnamon").setup(opts)
     end,
-  },
-  {
-    "simrat39/rust-tools.nvim",
-    event = "VeryLazy",
-    dependencies = "mason-lspconfig.nvim", -- make sure to load after mason-lspconfig
   },
   {
     "nicwest/vim-camelsnek",
