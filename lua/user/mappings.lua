@@ -203,7 +203,6 @@ return {
     },
     ["<Leader>fw"] = {
       function()
-        print("no2")
         require("telescope.builtin").live_grep({ default_text = current_picker_text() })
       end,
       desc = "Find words",
@@ -305,7 +304,6 @@ return {
       function()
         local win = vim.api.nvim_get_current_win()
         local position = vim.api.nvim_win_get_cursor(win)
-        P(position)
         vim.api.nvim_feedkeys("ggVGy", "normal", false)
         vim.schedule(function()
           vim.api.nvim_win_set_cursor(win, position)

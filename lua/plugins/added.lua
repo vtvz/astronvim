@@ -41,7 +41,7 @@ return {
     end,
   },
   -- Smooth scrolling
-  {
+  --[[ {
     "declancm/cinnamon.nvim",
     event = "VeryLazy",
     opts = {
@@ -52,7 +52,7 @@ return {
     config = function(_, opts)
       require("cinnamon").setup(opts)
     end,
-  },
+  }, ]]
   {
     "nicwest/vim-camelsnek",
     event = "VeryLazy",

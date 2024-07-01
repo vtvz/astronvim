@@ -1,10 +1,6 @@
 local common = require("git_srcr.common")
 local utils = require("user.utils")
 
-local astro_utils = function()
-  return require("astronvim.utils")
-end
-
 local M = {
   patterns = {
     ["bitbucket.org"] = {
@@ -35,11 +31,11 @@ end
 
 function M.yank_link(link)
   if link then
-    astro_utils().notify("Coplied link to git repo")
+    utils.notify("Coplied link to git repo")
 
     vim.fn.setreg("+", link)
   else
-    astro_utils().notify("No link generated")
+    utils.notify("No link generated")
   end
 end
 
