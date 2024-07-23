@@ -129,7 +129,7 @@ return {
     lazy = true,
     cmd = "Silicon",
     config = function()
-      require("silicon").setup({
+      require("nvim-silicon").setup({
         font = "FiraCode Nerd Font Mono",
         to_clipboard = true,
         no_window_controls = true,
