@@ -1,9 +1,9 @@
 local function get_searchable_dir()
   local dir = require("oil").get_current_dir()
-  local entry = require("oil").get_cursor_entry()
-  if entry and entry.type == "directory" then
-    dir = dir .. "/" .. entry.parsed_name
-  end
+  -- local entry = require("oil").get_cursor_entry()
+  -- if entry and entry.type == "directory" then
+  --   dir = dir .. "/" .. entry.parsed_name
+  -- end
 
   return dir
 end
@@ -33,6 +33,12 @@ return {
         ["<Leader>ff"] = function()
           require("telescope.builtin").find_files({
             search_dirs = { get_searchable_dir() },
+          })
+        end,
+
+        ["<Leader>FR"] = function()
+          require("spectre").open({
+            search_paths = { get_searchable_dir() },
           })
         end,
       },
