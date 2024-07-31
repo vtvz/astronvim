@@ -105,9 +105,6 @@ return {
         "typescript",
         "yaml",
       },
-      context_commentstring = {
-        enable = true,
-      },
       playground = {
         enable = true,
         disable = {},
