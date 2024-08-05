@@ -53,7 +53,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
-vim.api.nvim_create_autocmd("QuitPre", {
+vim.api.nvim_create_autocmd("ExitPre", {
   pattern = "*",
   callback = function()
     local terminals = require("toggleterm.terminal").get_all()
