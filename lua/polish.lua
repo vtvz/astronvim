@@ -45,11 +45,16 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   desc = "Trailing spaces",
   group = au,
   callback = function()
-    -- Remove trailing spaces
-    vim.api.nvim_command(":%s/\\s\\+$//e")
-    -- Remove ending lines
-    pcall(vim.api.nvim_command, ":%s#\\($\\n\\s*\\)\\+\\%$##")
-    pcall(vim.api.nvim_command, ":%s#\\%^\\($\\n\\s*\\)\\+##")
+    local Path = require("plenary.path")
+    local file = Path:new(vim.fn.bufname())
+
+    if file:exists() then
+      -- Remove trailing spaces
+      vim.api.nvim_command(":%s/\\s\\+$//e")
+      -- Remove ending lines
+      pcall(vim.api.nvim_command, ":%s#\\($\\n\\s*\\)\\+\\%$##")
+      pcall(vim.api.nvim_command, ":%s#\\%^\\($\\n\\s*\\)\\+##")
+    end
   end,
 })
 

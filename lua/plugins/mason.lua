@@ -23,15 +23,15 @@ return {
         "lua_ls",
         "rust_analyzer",
         "terraformls",
-        "tsserver",
+        -- "tsserver",
       })
 
       require("mason-lspconfig").setup_handlers({
         -- Next, you can provide a dedicated handler for specific servers.
         -- For example, a handler override for the `rust_analyzer`:
-        ["tflint"] = function()
-          require("rust-tools").setup({})
-        end,
+        -- ["tflint"] = function()
+        --   require("rust-tools").setup({})
+        -- end,
       })
     end,
   },
