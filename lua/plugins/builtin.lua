@@ -65,6 +65,7 @@ return {
         "Client %d+ quit with exit code %d+ and signal %d+",
         "[LSP][%s+] timeout",
         'Error detected while processing LspAttach Autocommands for "*"',
+        "rust.analyzer: .32802: server cancelled the request",
       }
 
       local original_notify = vim.notify
