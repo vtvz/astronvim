@@ -96,6 +96,10 @@ return {
     ["A"] = {
       function()
         local mode = vim.api.nvim_get_mode()
+        if mode["mode"] == "\22" then
+          vim.api.nvim_feedkeys("A", "n", false)
+          return
+        end
         if mode["mode"] == "v" then
           vim.api.nvim_feedkeys("V", "normal", false)
         end
@@ -104,6 +108,7 @@ return {
         end)
       end,
       desc = "Select All",
+      noremap = true,
     },
     ["<Leader>vgx"] = {
       require("git_srcr").open,
