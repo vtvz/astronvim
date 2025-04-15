@@ -6,7 +6,8 @@ return {
   opts = {
     -- add any opts here
     -- for example
-    provider = "openai",
+    provider = "claude",
+    cursor_applying_provider = "claude",
     openai = {
       endpoint = "https://api.openai.com/v1",
       model = "gpt-4o", -- your desired model (or use gpt-4o, etc.)
@@ -16,6 +17,21 @@ return {
       -- reasoning_effort = "high" -- only supported for reasoning models (o1, etc.)
       proxy = "socks5://localhost:1080",
     },
+    claude = {
+      proxy = "socks5://localhost:1080",
+    },
+    vendors = {
+      --- ... existing vendors
+      groq = { -- define groq provider
+        __inherited_from = "openai",
+        api_key_name = "GROQ_API_KEY",
+        endpoint = "https://api.groq.com/openai/v1/",
+        model = "llama-3.3-70b-versatile",
+        max_tokens = 32768, -- remember to increase this value, otherwise it will stop generating halfway
+      },
+    },
+    hints = { enabled = false },
+    behaviour = { enable_cursor_planning_mode = true },
   },
   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
   build = "make",
