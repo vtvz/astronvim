@@ -6,22 +6,28 @@ return {
   opts = {
     -- add any opts here
     -- for example
-    provider = "claude",
+    provider = "openai",
     cursor_applying_provider = "claude",
-    openai = {
-      endpoint = "https://api.openai.com/v1",
-      model = "gpt-4o", -- your desired model (or use gpt-4o, etc.)
-      timeout = 30000, -- timeout in milliseconds
-      temperature = 0, -- adjust if needed
-      max_tokens = 4096,
-      -- reasoning_effort = "high" -- only supported for reasoning models (o1, etc.)
-      proxy = "socks5://localhost:1080",
-    },
-    claude = {
-      proxy = "socks5://localhost:1080",
-    },
-    vendors = {
-      --- ... existing vendors
+    providers = {
+      openai = {
+        endpoint = "https://api.openai.com/v1",
+        model = "gpt-4o", -- your desired model (or use gpt-4o, etc.)
+        proxy = "socks5://localhost:1080",
+        timeout = 30000, -- timeout in milliseconds
+        extra_request_body = {
+          temperature = 0, -- adjust if needed
+          max_tokens = 4096,
+        },
+      },
+      claude = {
+        proxy = "socks5://localhost:1080",
+        model = "claude-sonnet-4-0",
+        timeout = 30000, -- timeout in milliseconds
+        extra_request_body = {
+          temperature = 0, -- adjust if needed
+          max_tokens = 4096,
+        },
+      },
       groq = { -- define groq provider
         __inherited_from = "openai",
         api_key_name = "GROQ_API_KEY",
