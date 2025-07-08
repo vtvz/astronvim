@@ -6,7 +6,7 @@ return {
   opts = {
     -- add any opts here
     -- for example
-    provider = "openai",
+    provider = "claude",
     cursor_applying_provider = "claude",
     providers = {
       openai = {
@@ -14,6 +14,7 @@ return {
         model = "gpt-4o", -- your desired model (or use gpt-4o, etc.)
         proxy = "socks5://localhost:1080",
         timeout = 30000, -- timeout in milliseconds
+        disabled_tools = { "bash", "run_python" },
         extra_request_body = {
           temperature = 0, -- adjust if needed
           max_tokens = 4096,
@@ -23,6 +24,7 @@ return {
         proxy = "socks5://localhost:1080",
         model = "claude-sonnet-4-0",
         timeout = 30000, -- timeout in milliseconds
+        disabled_tools = { "bash", "run_python" },
         extra_request_body = {
           temperature = 0, -- adjust if needed
           max_tokens = 4096,
