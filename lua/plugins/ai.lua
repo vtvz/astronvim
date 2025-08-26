@@ -21,7 +21,8 @@ return {
         },
       },
       claude = {
-        proxy = "socks5://localhost:1080",
+        proxy = "http://localhost:1081",
+        -- proxy = "socks5://localhost:1080",
         model = "claude-sonnet-4-0",
         timeout = 30000, -- timeout in milliseconds
         disabled_tools = { "bash", "run_python" },
@@ -38,8 +39,13 @@ return {
         max_tokens = 32768, -- remember to increase this value, otherwise it will stop generating halfway
       },
     },
-    hints = { enabled = false },
-    behaviour = { enable_cursor_planning_mode = true },
+    selection = {
+      enabled = false,
+    },
+    behaviour = {
+      enable_token_counting = false,
+      enable_cursor_planning_mode = true,
+    },
   },
   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
   build = "make",
