@@ -70,7 +70,7 @@ return {
     cmd = {
       "Spectre",
     },
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons" },
+    dependencies = { "nvim-lua/plenary.nvim", "echasnovski/mini.icons" }, -- mini.icons replaces nvim-web-devicons in v5
     opts = {
       -- open_cmd = "enew",
       color_devicons = false,

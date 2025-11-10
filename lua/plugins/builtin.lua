@@ -1,22 +1,25 @@
-local null_ls = require("null-ls")
-
 return {
+  -- alpha-nvim is replaced by snacks.nvim in v5
+  -- Dashboard customizations can be done through snacks.nvim dashboard
   {
-    "goolord/alpha-nvim",
-    opts = function(_, opts) -- override the options using lazy.nvim
-      opts.section.header.val = { -- change the header section value
-        "╔═══════════════════════════════════════╗",
-        "║                                       ║",
-        "║  ██╗   ██╗████████╗██╗   ██╗███████╗  ║",
-        "║  ██║   ██║╚══██╔══╝██║   ██║╚══███╔╝  ║",
-        "║  ██║   ██║   ██║   ██║   ██║  ███╔╝   ║",
-        "║  ╚██╗ ██╔╝   ██║   ╚██╗ ██╔╝ ███╔╝    ║",
-        "║   ╚████╔╝    ██║    ╚████╔╝ ███████╗  ║",
-        "║    ╚═══╝     ╚═╝     ╚═══╝  ╚══════╝  ║",
-        "║                                       ║",
-        "╚═══════════════════════════════════════╝",
-      }
-    end,
+    "folke/snacks.nvim",
+    opts = {
+      dashboard = {
+        preset = {
+          header = [[
+╔═══════════════════════════════════════╗
+║                                       ║
+║  ██╗   ██╗████████╗██╗   ██╗███████╗  ║
+║  ██║   ██║╚══██╔══╝██║   ██║╚══███╔╝  ║
+║  ██║   ██║   ██║   ██║   ██║  ███╔╝   ║
+║  ╚██╗ ██╔╝   ██║   ╚██╗ ██╔╝ ███╔╝    ║
+║   ╚████╔╝    ██║    ╚████╔╝ ███████╗  ║
+║    ╚═══╝     ╚═╝     ╚═══╝  ╚══════╝  ║
+║                                       ║
+╚═══════════════════════════════════════╝]],
+        },
+      },
+    },
   },
   {
     "nvim-treesitter/playground",
@@ -26,40 +29,32 @@ return {
       "TSHighlightCapturesUnderCursor",
     },
   },
+  -- nvim-cmp is replaced by blink.cmp in v5
+  -- blink.cmp has built-in support for LSP, path, snippets, and buffer
+  -- LuaSnip integration requires additional setup via blink-cmp-luasnip
   {
-    -- override nvim-autopairs plugin
-    "hrsh7th/nvim-cmp",
+    "saghen/blink.cmp",
     dependencies = {
-      -- add cmp source as dependency of cmp
-      "hrsh7th/cmp-nvim-lua",
-      "hrsh7th/cmp-nvim-lsp-signature-help",
-      -- add cmp source as dependency of cmp
+      "L3MON4D3/LuaSnip",
+      { "saghen/blink-cmp-luasnip", optional = true },
     },
-    -- override the options table that is used in the `require("cmp").setup()` call
     opts = function(_, opts)
-      -- opts parameter is the default options table
-      -- the function is lazy loaded so cmp is able to be required
-      local cmp = require("cmp")
-      -- modify the sources part of the options table
-      opts.sources = cmp.config.sources({
-        { name = "nvim_lsp", priority = 1000 },
-        { name = "luasnip", priority = 750 },
-        { name = "buffer", priority = 500 },
-        { name = "path", priority = 250 },
-        { name = "nvim_lua", priority = 700 }, -- add new source
-        { name = "nvim_lsp_signature_help", priority = 700 }, -- add new source
-      })
-
-      -- return the new table to be used
+      -- Use default sources: lsp, path, snippets, buffer
+      -- If you want luasnip specifically, install saghen/blink-cmp-luasnip
       return opts
     end,
   },
+  -- nvim-notify is replaced by snacks.nvim in v5
+  -- Notification filtering can be done through snacks.notify
   {
-    "rcarriga/nvim-notify",
-    event = "UIEnter",
-    config = function(plugin, opts)
-      require("astronvim.plugins.configs.notify")(plugin, opts)
+    "folke/snacks.nvim",
+    opts = function(_, opts)
+      -- Merge with existing snacks config if any
+      opts = opts or {}
+      opts.notifier = opts.notifier or {}
 
+      -- Setup notification filtering
+      local original_notify = vim.notify
       local banned_messages = {
         "Accessing client.resolved_capabilities is deprecated",
         "Client %d+ quit with exit code %d+ and signal %d+",
@@ -68,9 +63,7 @@ return {
         "rust.analyzer: .32802: server cancelled the request",
       }
 
-      local original_notify = vim.notify
-
-      local filtered_notify = function(msg, ...)
+      vim.notify = function(msg, ...)
         if type(msg) == "string" then
           for _, banned in ipairs(banned_messages) do
             if string.match(msg, banned) then
@@ -79,11 +72,10 @@ return {
             end
           end
         end
-
         original_notify(msg, ...)
       end
 
-      vim.notify = filtered_notify
+      return opts
     end,
   },
   {
@@ -128,30 +120,7 @@ return {
       },
     },
   },
-  {
-    "nvimtools/none-ls.nvim",
-    opts = function(plugin, opts) -- overrides `require("null-ls").setup(config)`
-      -- config variable is the default configuration table for the setup functino call
-
-      -- Check supported formatters and linters
-      -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/formatting
-      -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/diagnostics
-
-      opts.sources = {
-        require("user.groovy_formatter").setup(),
-        -- require("null-ls").builtins.diagnostics.tfsec,
-        null_ls.builtins.formatting.shfmt.with({
-          extra_args = { "-i", "2" },
-        }),
-      }
-      -- set up null-ls's on_attach function
-      -- NOTE: You can remove this on attach function to disable format on save
-
-      opts.on_attach = require("user.groovy_formatter").on_attach(opts.on_attach)
-
-      return opts
-    end,
-  },
+  -- none-ls configuration moved to lua/plugins/none-ls.lua to avoid duplication
   {
     "akinsho/toggleterm.nvim",
     opts = {
@@ -159,12 +128,8 @@ return {
       -- open_mapping = [[<c-'>]],
     },
   },
-  {
-    "stevearc/dressing.nvim",
-    opts = {
-      select = { backend = { "builtin" } },
-    },
-  },
+  -- dressing.nvim is replaced by snacks.nvim in v5
+  -- Input and select UI is now handled by snacks.input and snacks.picker
   --[[
   {
     "AstroNvim/astrocommunity",
