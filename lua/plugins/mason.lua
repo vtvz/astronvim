@@ -15,7 +15,6 @@ return {
         "html-lsp", -- was html
         "jdtls", -- unchanged
         "json-lsp", -- was jsonls
-        "jsonnet-language-server", -- was jsonnet_ls
         "lua-language-server", -- was lua_ls
         "rust-analyzer", -- was rust_analyzer
         "terraform-ls", -- was terraformls

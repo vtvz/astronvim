@@ -13,6 +13,10 @@ return {
         cache_picker = {
           num_pickers = 10,
         },
+        layout_config = {
+          prompt_position = "top",
+        },
+        sorting_strategy = "ascending",
       },
     },
   },
