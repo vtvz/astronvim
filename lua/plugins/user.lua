@@ -26,11 +26,21 @@ return {
   -- You can also easily customize additional setup of plugins that is outside of the plugin's setup call
   {
     "L3MON4D3/LuaSnip",
-    config = function(plugin, opts)
-      require("astronvim.plugins.configs.luasnip")(plugin, opts) -- include the default astronvim config that calls the setup call
+    config = function(...)
+      require("astronvim.plugins.configs.luasnip")(...)
+
       -- add more custom luasnip configuration such as filetype extend or custom snippets
       local luasnip = require("luasnip")
       luasnip.filetype_extend("javascript", { "javascriptreact" })
+
+      -- Setup Tab/Shift-Tab for snippet navigation
+      vim.keymap.set({ "i", "s" }, "<Tab>", function()
+        require("luasnip").jump(1)
+      end, { silent = true })
+
+      vim.keymap.set({ "i", "s" }, "<S-Tab>", function()
+        require("luasnip").jump(-1)
+      end, { silent = true })
     end,
   },
 
