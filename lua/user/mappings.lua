@@ -219,9 +219,10 @@ return {
           default_text = current_picker_text(),
           hidden = true,
           no_ignore = true,
+          file_ignore_patterns = { "^%.git/" },
         })
       end,
-      desc = "Find all files",
+      desc = "Find all files (excluding .git)",
     },
     ["<Leader>fw"] = {
       function()
@@ -233,11 +234,12 @@ return {
       function()
         require("telescope.builtin").live_grep({
           default_text = current_picker_text(),
-          additional_args = function(args)
-            return vim.list_extend(args, { "--hidden", "--no-ignore" })
+          additional_args = function()
+            return { "--hidden", "--no-ignore", "--glob", "!.git/" }
           end,
         })
       end,
+      desc = "Find words in all files (excluding .git)",
     },
     ["x"] = { '"_x', desc = "Delete without pollution registry" },
     ["<C-a>"] = {

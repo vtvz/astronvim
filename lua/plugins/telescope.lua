@@ -6,7 +6,7 @@ return {
     "nvim-telescope/telescope.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "echasnovski/mini.icons", -- replaces nvim-web-devicons
+      "echasnovski/mini.icons",
     },
     opts = {
       defaults = {

@@ -1,6 +1,7 @@
 return {
   {
     "fatih/vim-go",
+    enabled = false,
     event = "VeryLazy",
   },
   {
@@ -94,6 +95,7 @@ return {
   },
   {
     "Wansmer/treesj",
+    enabled = false,
     keys = { "<space>m", "<space>M" },
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     config = function()

@@ -16,28 +16,28 @@ vim.api.nvim_create_user_command("JenkinsValidate", function()
   require("jenkinsfile_linter").validate()
 end, { desc = "Validate Jenkinsfile" })
 
-vim.api.nvim_cmd({ cmd = "highlight", args = { "NeoTreeGitIgnored", "guifg=#67859e" } }, {})
+-- vim.api.nvim_cmd({ cmd = "highlight", args = { "NeoTreeGitIgnored", "guifg=#67859e" } }, {})
 
-local MESSAGES_BUFNR
+local messages_bufnr
 
 vim.api.nvim_create_user_command("Messages", function()
   local messages_output = vim.api.nvim_exec2(":messages", { output = true }).output
 
-  if MESSAGES_BUFNR ~= nil and vim.fn.buflisted(MESSAGES_BUFNR) == 0 then
-    MESSAGES_BUFNR = nil
+  if messages_bufnr ~= nil and vim.fn.buflisted(messages_bufnr) == 0 then
+    messages_bufnr = nil
   end
 
-  if not MESSAGES_BUFNR then
-    MESSAGES_BUFNR = vim.api.nvim_create_buf(true, true)
-    vim.bo[MESSAGES_BUFNR].buftype = "nofile"
-    vim.api.nvim_buf_set_name(MESSAGES_BUFNR, ":messages")
+  if not messages_bufnr then
+    messages_bufnr = vim.api.nvim_create_buf(true, true)
+    vim.bo[messages_bufnr].buftype = "nofile"
+    vim.api.nvim_buf_set_name(messages_bufnr, ":messages")
   end
 
-  vim.bo[MESSAGES_BUFNR].modifiable = true
-  vim.api.nvim_buf_set_lines(MESSAGES_BUFNR, 0, -1, true, vim.split(messages_output, "\n"))
-  vim.bo[MESSAGES_BUFNR].modifiable = false
+  vim.bo[messages_bufnr].modifiable = true
+  vim.api.nvim_buf_set_lines(messages_bufnr, 0, -1, true, vim.split(messages_output, "\n"))
+  vim.bo[messages_bufnr].modifiable = false
 
-  vim.api.nvim_set_current_buf(MESSAGES_BUFNR)
+  vim.api.nvim_set_current_buf(messages_bufnr)
   vim.api.nvim_win_set_cursor(0, { vim.api.nvim_buf_line_count(0), 0 })
 end, { desc = "Show messages in a buffer" })
 
