@@ -134,12 +134,8 @@ return {
       -- open_mapping = [[<c-'>]],
     },
   },
-  -- dressing.nvim is replaced by snacks.nvim in v5
-  -- Input and select UI is now handled by snacks.input and snacks.picker
-  --[[
-  {
-    "AstroNvim/astrocommunity",
-    { import = "astrocommunity.motion.harpoon" },
-  },
-  ]]
+
+  { "nvim-neo-tree/neo-tree.nvim", enabled = false },
+
+  { "max397574/better-escape.nvim", enabled = false },
 }
