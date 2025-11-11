@@ -25,7 +25,7 @@ function M._setup_timer()
       end
 
       for bufnr, _ in ipairs(M.formatting) do
-        vim.api.nvim_buf_set_option(bufnr, "modifiable", true)
+        vim.bo[bufnr].modifiable = true
 
         vim.notify("File can be modified", vim.log.levels.INFO, { timeout = 500, title = "Groovy Formatter" })
 
@@ -44,12 +44,12 @@ function M.setup()
     name = "groovy-format.sh",
     generator = require("null-ls.helpers").generator_factory({
       args = function(params)
-        vim.api.nvim_buf_set_option(params.bufnr, "modifiable", false)
+        vim.bo[params.bufnr].modifiable = false
         return { "$FILENAME" }
       end,
       command = "groovy-format.sh",
       on_output = function(params, done)
-        vim.api.nvim_buf_set_option(params.bufnr, "modifiable", true)
+        vim.bo[params.bufnr].modifiable = true
         vim.notify("File can be modified", vim.log.levels.INFO, { timeout = 500, title = "Groovy Formatter" })
         vim.defer_fn(function()
           if vim.bo[params.bufnr].modified then
@@ -106,7 +106,7 @@ function M.on_attach(on_attach)
           end
 
           M.formatting[bufnr] = true
-          vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
+          vim.bo[bufnr].modifiable = false
 
           vim.lsp.buf.format({
             timeout_ms = 60 * 1000,

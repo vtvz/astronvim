@@ -1,6 +1,7 @@
 return {
   {
     "fatih/vim-go",
+    enabled = false,
     event = "VeryLazy",
   },
   {
@@ -70,7 +71,7 @@ return {
     cmd = {
       "Spectre",
     },
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons" },
+    dependencies = { "nvim-lua/plenary.nvim", "echasnovski/mini.icons" }, -- mini.icons replaces nvim-web-devicons in v5
     opts = {
       -- open_cmd = "enew",
       color_devicons = false,
@@ -94,6 +95,7 @@ return {
   },
   {
     "Wansmer/treesj",
+    enabled = false,
     keys = { "<space>m", "<space>M" },
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     config = function()

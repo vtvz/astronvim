@@ -16,64 +16,65 @@ local function visual_selected_text()
   return text
 end
 
+local function switch_terminal(direction)
+  return function()
+    -- Only work in toggleterm buffers
+    if vim.bo.filetype ~= "toggleterm" then
+      return
+    end
+
+    local focused_id = require("toggleterm.terminal").get_focused_id()
+    local terminals = require("toggleterm.terminal").get_all()
+
+    if #terminals > 0 and focused_id then
+      local focused_index = nil
+      for index, terminal in ipairs(terminals) do
+        if focused_id == terminal.id then
+          focused_index = index
+          break
+        end
+      end
+
+      local to_focus
+      if direction == "prev" then
+        to_focus = terminals[#terminals].id
+        if terminals[focused_index - 1] then
+          to_focus = terminals[focused_index - 1].id
+        end
+      else -- next
+        to_focus = terminals[1].id
+        if terminals[focused_index + 1] then
+          to_focus = terminals[focused_index + 1].id
+        end
+      end
+
+      if to_focus ~= focused_id then
+        require("toggleterm").toggle(to_focus)
+        vim.schedule(function()
+          require("toggleterm.terminal").get(to_focus)
+        end)
+      end
+    end
+  end
+end
+
 return {
   t = {
-    ["<C-\\><C-[>"] = {
-      function()
-        local focused_id = require("toggleterm.terminal").get_focused_id()
-
-        local terminals = require("toggleterm.terminal").get_all()
-
-        if #terminals > 0 and focused_id then
-          local focused_index = nil
-          for index, terminal in ipairs(terminals) do
-            if focused_id == terminal.id then
-              focused_index = index
-              break
-            end
-          end
-
-          local to_focus = terminals[#terminals].id
-          if terminals[focused_index - 1] then
-            to_focus = terminals[focused_index - 1].id
-          end
-
-          if to_focus ~= focused_id then
-            require("toggleterm").toggle(to_focus)
-            vim.schedule(function()
-              require("toggleterm.terminal").get(to_focus):set_mode("i")
-            end)
-          end
-        end
-      end,
+    ["<C-\\><C-{>"] = {
+      switch_terminal("prev"),
+      desc = "Switch to previous terminal",
     },
-    ["<C-\\><C-]>"] = {
-      function()
-        local focused_id = require("toggleterm.terminal").get_focused_id()
-
-        local terminals = require("toggleterm.terminal").get_all()
-
-        if #terminals > 0 and focused_id then
-          local focused_index = nil
-          for index, terminal in ipairs(terminals) do
-            if focused_id == terminal.id then
-              focused_index = index
-              break
-            end
-          end
-
-          local to_focus = terminals[1].id
-          if terminals[focused_index + 1] then
-            to_focus = terminals[focused_index + 1].id
-          end
-          if to_focus ~= focused_id then
-            require("toggleterm").toggle(to_focus)
-            vim.schedule(function()
-              require("toggleterm.terminal").get(to_focus):set_mode("i")
-            end)
-          end
-        end
-      end,
+    ["<C-\\><C-}>"] = {
+      switch_terminal("next"),
+      desc = "Switch to next terminal",
+    },
+    ["<C-|><C-{>"] = {
+      switch_terminal("prev"),
+      desc = "Switch to previous terminal",
+    },
+    ["<C-|><C-}>"] = {
+      switch_terminal("next"),
+      desc = "Switch to next terminal",
     },
   },
   v = {
@@ -126,15 +127,31 @@ return {
       expr = false,
     },
     ["<M-j>"] = {
-      [[:m '>+1<CR>gv=gv]],
+      [[:m '>+1<CR>gvgv]],
       noremap = true,
     },
     ["<M-k>"] = {
-      [[:m '<-2<CR>gv=gv]],
+      [[:m '<-2<CR>gvgv]],
       noremap = true,
     },
   },
   n = {
+    ["<C-\\><C-{>"] = {
+      switch_terminal("prev"),
+      desc = "Switch to previous terminal",
+    },
+    ["<C-\\><C-}>"] = {
+      switch_terminal("next"),
+      desc = "Switch to next terminal",
+    },
+    ["<C-|><C-{>"] = {
+      switch_terminal("prev"),
+      desc = "Switch to previous terminal",
+    },
+    ["<C-|><C-}>"] = {
+      switch_terminal("next"),
+      desc = "Switch to next terminal",
+    },
     ["<Leader>-"] = { "<CMD>Oil<CR>", desc = "Open parent directory" },
     ["<Leader>fd"] = {
       function()
@@ -144,7 +161,7 @@ return {
         require("telescope.builtin").find_files({
           find_command = { "find", ".", "-type", "d" },
 
-          attach_mappings = function(prompt_bufnr, map)
+          attach_mappings = function(prompt_bufnr, _)
             actions.select_default:replace(function()
               actions.close(prompt_bufnr)
               local selection = action_state.get_selected_entry()
@@ -202,9 +219,10 @@ return {
           default_text = current_picker_text(),
           hidden = true,
           no_ignore = true,
+          file_ignore_patterns = { "^%.git/" },
         })
       end,
-      desc = "Find all files",
+      desc = "Find all files (excluding .git)",
     },
     ["<Leader>fw"] = {
       function()
@@ -216,11 +234,12 @@ return {
       function()
         require("telescope.builtin").live_grep({
           default_text = current_picker_text(),
-          additional_args = function(args)
-            return vim.list_extend(args, { "--hidden", "--no-ignore" })
+          additional_args = function()
+            return { "--hidden", "--no-ignore", "--glob", "!.git/" }
           end,
         })
       end,
+      desc = "Find words in all files (excluding .git)",
     },
     ["x"] = { '"_x', desc = "Delete without pollution registry" },
     ["<C-a>"] = {

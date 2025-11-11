@@ -65,7 +65,8 @@ function M.notify(msg, level)
 end
 
 function M.system_open(link)
-  require("astrocore").system_open(link)
+  -- In AstroNvim v5, system_open was replaced with vim.ui.open
+  vim.ui.open(link)
 end
 
 function M.buffer_close_all()

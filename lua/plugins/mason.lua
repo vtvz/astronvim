@@ -1,65 +1,36 @@
-if true then
-  return {}
-end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
-
 -- Customize Mason plugins
+-- In v5, mason-tool-installer replaces separate ensure_installed tables
 
 ---@type LazySpec
 return {
-  -- use mason-lspconfig to configure LSP installations
+  -- mason-tool-installer.nvim replaces mason-lspconfig, mason-null-ls, and mason-nvim-dap ensure_installed
   {
-    "williamboman/mason-lspconfig.nvim",
-    -- overrides `require("mason-lspconfig").setup(...)`
-    opts = function(_, opts)
-      -- add more things to the ensure_installed table protecting against community packs modifying it
-      opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed, {
-        "ansiblels",
-        "dockerls",
-        "eslint",
-        "html",
-        "jdtls",
-        "jsonls",
-        "jsonnet_ls",
-        "lua_ls",
-        "rust_analyzer",
-        "terraformls",
-        -- "tsserver",
-      })
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    opts = {
+      ensure_installed = {
+        -- LSP servers (note: package names changed, e.g., lua_ls → lua-language-server)
+        "ansible-language-server", -- was ansiblels
+        "dockerfile-language-server", -- was dockerls
+        "eslint-lsp", -- was eslint
+        "html-lsp", -- was html
+        "jdtls", -- unchanged
+        "json-lsp", -- was jsonls
+        "lua-language-server", -- was lua_ls
+        "rust-analyzer", -- was rust_analyzer
+        "terraform-ls", -- was terraformls
 
-      require("mason-lspconfig").setup_handlers({
-        -- Next, you can provide a dedicated handler for specific servers.
-        -- For example, a handler override for the `rust_analyzer`:
-        -- ["tflint"] = function()
-        --   require("rust-tools").setup({})
-        -- end,
-      })
-    end,
-  },
-  -- use mason-null-ls to configure Formatters/Linter installation for null-ls sources
-  {
-    "jay-babu/mason-null-ls.nvim",
-    -- overrides `require("mason-null-ls").setup(...)`
-    opts = function(_, opts)
-      -- add more things to the ensure_installed table protecting against community packs modifying it
-      opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed, {
+        -- Formatters/Linters (from mason-null-ls)
         "hadolint",
         "nginx-language-server",
         "prettier",
         "shellcheck",
         "shfmt",
         "stylua",
-      })
-    end,
-  },
-  {
-    "jay-babu/mason-nvim-dap.nvim",
-    -- overrides `require("mason-nvim-dap").setup(...)`
-    opts = function(_, opts)
-      -- add more things to the ensure_installed table protecting against community packs modifying it
-      opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed, {
+
+        -- DAP (from mason-nvim-dap)
         -- "python",
-        -- add more arguments for adding more debuggers
-      })
-    end,
+        -- add more debuggers as needed
+      },
+    },
   },
 }
