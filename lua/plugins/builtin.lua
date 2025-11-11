@@ -40,8 +40,13 @@ return {
       { "saghen/blink-cmp-luasnip", optional = true },
     },
     opts = function(_, opts)
-      -- Use default sources: lsp, path, snippets, buffer
-      -- If you want luasnip specifically, install saghen/blink-cmp-luasnip
+      -- Remove Tab from completion to avoid collision with snippet navigation
+      -- Only use Ctrl+n/Ctrl+p for completion navigation
+      opts.keymap = opts.keymap or {}
+      opts.keymap.preset = "default"
+      opts.keymap["<Tab>"] = {}
+      opts.keymap["<S-Tab>"] = {}
+
       return opts
     end,
   },

@@ -33,6 +33,14 @@ return {
       local luasnip = require("luasnip")
       luasnip.filetype_extend("javascript", { "javascriptreact" })
 
+      -- require("luasnip.loaders.from_vscode").lazy_load({
+      --   paths = { vim.fn.stdpath("config") .. "/snippets" },
+      -- })
+
+      require("luasnip.loaders.from_snipmate").lazy_load({
+        paths = { vim.fn.stdpath("config") .. "/snipmate" },
+      })
+
       -- Setup Tab/Shift-Tab for snippet navigation
       vim.keymap.set({ "i", "s" }, "<Tab>", function()
         require("luasnip").jump(1)
