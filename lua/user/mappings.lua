@@ -60,11 +60,19 @@ end
 
 return {
   t = {
-    ["<C-\\><C-[>"] = {
+    ["<C-\\><C-{>"] = {
       switch_terminal("prev"),
       desc = "Switch to previous terminal",
     },
-    ["<C-\\><C-]>"] = {
+    ["<C-\\><C-}>"] = {
+      switch_terminal("next"),
+      desc = "Switch to next terminal",
+    },
+    ["<C-|><C-{>"] = {
+      switch_terminal("prev"),
+      desc = "Switch to previous terminal",
+    },
+    ["<C-|><C-}>"] = {
       switch_terminal("next"),
       desc = "Switch to next terminal",
     },
@@ -128,11 +136,19 @@ return {
     },
   },
   n = {
-    ["<C-\\><C-[>"] = {
+    ["<C-\\><C-{>"] = {
       switch_terminal("prev"),
       desc = "Switch to previous terminal",
     },
-    ["<C-\\><C-]>"] = {
+    ["<C-\\><C-}>"] = {
+      switch_terminal("next"),
+      desc = "Switch to next terminal",
+    },
+    ["<C-|><C-{>"] = {
+      switch_terminal("prev"),
+      desc = "Switch to previous terminal",
+    },
+    ["<C-|><C-}>"] = {
       switch_terminal("next"),
       desc = "Switch to next terminal",
     },

@@ -43,12 +43,20 @@ return {
 
       -- Setup Tab/Shift-Tab for snippet navigation
       vim.keymap.set({ "i", "s" }, "<Tab>", function()
-        require("luasnip").jump(1)
-      end, { silent = true })
+        if luasnip.jumpable(1) then
+          luasnip.jump(1)
+        else
+          return "<Tab>"
+        end
+      end, { silent = true, expr = true })
 
       vim.keymap.set({ "i", "s" }, "<S-Tab>", function()
-        require("luasnip").jump(-1)
-      end, { silent = true })
+        if luasnip.jumpable(-1) then
+          luasnip.jump(-1)
+        else
+          return "<S-Tab>"
+        end
+      end, { silent = true, expr = true })
     end,
   },
 
