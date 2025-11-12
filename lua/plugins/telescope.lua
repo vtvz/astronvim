@@ -1,6 +1,3 @@
--- In v5, telescope is replaced by snacks.picker by default
--- This configuration re-enables telescope for backward compatibility
--- with your custom mappings
 return {
   {
     "nvim-telescope/telescope.nvim",

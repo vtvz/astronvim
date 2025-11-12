@@ -35,14 +35,6 @@ return {
     },
   },
   {
-    "nvim-treesitter/playground",
-    cmd = {
-      "TSPlaygroundToggle",
-      "TSCaptureUnderCursor",
-      "TSHighlightCapturesUnderCursor",
-    },
-  },
-  {
     "saghen/blink.cmp",
     dependencies = {
       "L3MON4D3/LuaSnip",
@@ -174,8 +166,4 @@ return {
       -- open_mapping = [[<c-'>]],
     },
   },
-
-  { "nvim-neo-tree/neo-tree.nvim", enabled = false },
-
-  { "max397574/better-escape.nvim", enabled = false },
 }

@@ -1,12 +1,15 @@
 return {
   {
-    "fatih/vim-go",
-    enabled = false,
-    event = "VeryLazy",
-  },
-  {
     "ray-x/lsp_signature.nvim",
     event = "LspAttach",
+  },
+  {
+    "nvim-treesitter/playground",
+    cmd = {
+      "TSPlaygroundToggle",
+      "TSCaptureUnderCursor",
+      "TSHighlightCapturesUnderCursor",
+    },
   },
   {
     "Joorem/vim-haproxy",
@@ -33,19 +36,6 @@ return {
       require("nvim-surround").setup(opts)
     end,
   },
-  -- Smooth scrolling
-  --[[ {
-    "declancm/cinnamon.nvim",
-    event = "VeryLazy",
-    opts = {
-      options = {
-        delay = 1,
-      },
-    },
-    config = function(_, opts)
-      require("cinnamon").setup(opts)
-    end,
-  }, ]]
   {
     "nicwest/vim-camelsnek",
     event = "VeryLazy",
@@ -86,38 +76,9 @@ return {
     end,
   },
   {
-    "Wansmer/treesj",
-    enabled = false,
-    keys = { "<space>m", "<space>M" },
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    config = function()
-      require("treesj").setup({
-        use_default_keymaps = false,
-      })
-      -- For use default preset and it work with dot
-      vim.keymap.set("n", "<leader>m", require("treesj").toggle)
-      -- For extending default preset with `recursive = true`, but this doesn't work with dot
-      vim.keymap.set("n", "<leader>M", function()
-        require("treesj").toggle({ split = { recursive = true } })
-      end)
-    end,
-  },
-  {
     "ckipp01/nvim-jenkinsfile-linter",
     dependencies = { "nvim-lua/plenary.nvim" },
   },
-  -- {
-  --   "ThePrimeagen/harpoon",
-  --   branch = "harpoon2",
-  --   dependencies = { "nvim-lua/plenary.nvim" },
-  --   config = function(_, opts)
-  --     local harpoon = require("harpoon")
-  --
-  --     -- REQUIRED
-  --     harpoon:setup(opts)
-  --     harpoon.ui:toggle_quick_menu(harpoon:list())
-  --   end,
-  -- },
   {
     "michaelrommel/nvim-silicon",
     lazy = true,
