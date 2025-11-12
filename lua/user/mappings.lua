@@ -129,10 +129,12 @@ return {
     ["<M-j>"] = {
       [[:m '>+1<CR>gvgv]],
       noremap = true,
+      desc = "Move selection down",
     },
     ["<M-k>"] = {
       [[:m '<-2<CR>gvgv]],
       noremap = true,
+      desc = "Move selection up",
     },
   },
   n = {
@@ -175,22 +177,27 @@ return {
           end,
         })
       end,
+      desc = "Find directory then grep",
     },
     ["<M-j>"] = {
       [[:m .+1<CR>==]],
       noremap = true,
+      desc = "Move line down",
     },
     ["<M-k>"] = {
       [[:m .-2<CR>==]],
       noremap = true,
+      desc = "Move line up",
     },
     ["k"] = {
       [[(v:count > 1 ? "m'" . v:count : '') . 'k']],
       noremap = true,
+      desc = "Move up (with jump mark on count)",
     },
     ["j"] = {
       [[(v:count > 1 ? "m'" . v:count : '') . 'j']],
       noremap = true,
+      desc = "Move down (with jump mark on count)",
     },
     ["q:"] = {
       "<cmd>quit<cr>",
@@ -212,6 +219,7 @@ return {
       function()
         require("telescope.builtin").find_files({ default_text = current_picker_text() })
       end,
+      desc = "Find files",
     },
     ["<Leader>fF"] = {
       function()
