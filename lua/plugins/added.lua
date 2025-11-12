@@ -8,14 +8,6 @@ return {
     "ray-x/lsp_signature.nvim",
     event = "LspAttach",
   },
-  -- {
-  --   "IndianBoy42/tree-sitter-just",
-  --   event = "VeryLazy",
-  --   after = "nvim-treesitter",
-  --   config = function()
-  --     require("tree-sitter-just").setup({})
-  --   end,
-  -- },
   {
     "Joorem/vim-haproxy",
     event = "VeryLazy",
@@ -71,7 +63,7 @@ return {
     cmd = {
       "Spectre",
     },
-    dependencies = { "nvim-lua/plenary.nvim", "echasnovski/mini.icons" }, -- mini.icons replaces nvim-web-devicons in v5
+    dependencies = { "nvim-lua/plenary.nvim", "echasnovski/mini.icons" },
     opts = {
       -- open_cmd = "enew",
       color_devicons = false,

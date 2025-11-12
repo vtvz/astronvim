@@ -1,23 +1,35 @@
+local headers = {
+  table.concat({
+    "░▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░",
+    "░▒▓█▓▒░░▒▓█▓▒░  ░▒▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░",
+    " ░▒▓█▓▒▒▓█▓▒░   ░▒▓█▓▒░    ░▒▓█▓▒▒▓█▓▒░     ░▒▓██▓▒░ ",
+    " ░▒▓█▓▒▒▓█▓▒░   ░▒▓█▓▒░    ░▒▓█▓▒▒▓█▓▒░   ░▒▓██▓▒░   ",
+    "  ░▒▓█▓▓█▓▒░    ░▒▓█▓▒░     ░▒▓█▓▓█▓▒░  ░▒▓██▓▒░     ",
+    "  ░▒▓█▓▓█▓▒░    ░▒▓█▓▒░     ░▒▓█▓▓█▓▒░ ░▒▓█▓▒░       ",
+    "   ░▒▓██▓▒░     ░▒▓█▓▒░      ░▒▓██▓▒░  ░▒▓████████▓▒░",
+  }, "\n"),
+
+  table.concat({
+    "╔═══════════════════════════════════════╗",
+    "║                                       ║",
+    "║  ██╗   ██╗████████╗██╗   ██╗███████╗  ║",
+    "║  ██║   ██║╚══██╔══╝██║   ██║╚══███╔╝  ║",
+    "║  ██║   ██║   ██║   ██║   ██║  ███╔╝   ║",
+    "║  ╚██╗ ██╔╝   ██║   ╚██╗ ██╔╝ ███╔╝    ║",
+    "║   ╚████╔╝    ██║    ╚████╔╝ ███████╗  ║",
+    "║    ╚═══╝     ╚═╝     ╚═══╝  ╚══════╝  ║",
+    "║                                       ║",
+    "╚═══════════════════════════════════════╝",
+  }, "\n"),
+}
+
 return {
-  -- alpha-nvim is replaced by snacks.nvim in v5
-  -- Dashboard customizations can be done through snacks.nvim dashboard
   {
     "folke/snacks.nvim",
     opts = {
       dashboard = {
         preset = {
-          header = table.concat({
-            "╔═══════════════════════════════════════╗",
-            "║                                       ║",
-            "║  ██╗   ██╗████████╗██╗   ██╗███████╗  ║",
-            "║  ██║   ██║╚══██╔══╝██║   ██║╚══███╔╝  ║",
-            "║  ██║   ██║   ██║   ██║   ██║  ███╔╝   ║",
-            "║  ╚██╗ ██╔╝   ██║   ╚██╗ ██╔╝ ███╔╝    ║",
-            "║   ╚████╔╝    ██║    ╚████╔╝ ███████╗  ║",
-            "║    ╚═══╝     ╚═╝     ╚═══╝  ╚══════╝  ║",
-            "║                                       ║",
-            "╚═══════════════════════════════════════╝",
-          }, "\n"),
+          header = headers[2],
         },
       },
     },
@@ -30,9 +42,6 @@ return {
       "TSHighlightCapturesUnderCursor",
     },
   },
-  -- nvim-cmp is replaced by blink.cmp in v5
-  -- blink.cmp has built-in support for LSP, path, snippets, and buffer
-  -- LuaSnip integration requires additional setup via blink-cmp-luasnip
   {
     "saghen/blink.cmp",
     dependencies = {
@@ -50,8 +59,40 @@ return {
       return opts
     end,
   },
-  -- nvim-notify is replaced by snacks.nvim in v5
-  -- Notification filtering can be done through snacks.notify
+  {
+    "L3MON4D3/LuaSnip",
+    config = function(...)
+      require("astronvim.plugins.configs.luasnip")(...)
+
+      local luasnip = require("luasnip")
+      luasnip.filetype_extend("javascript", { "javascriptreact" })
+
+      -- require("luasnip.loaders.from_vscode").lazy_load({
+      --   paths = { vim.fn.stdpath("config") .. "/snippets" },
+      -- })
+
+      require("luasnip.loaders.from_snipmate").lazy_load({
+        paths = { vim.fn.stdpath("config") .. "/snipmate" },
+      })
+
+      -- Setup Tab/Shift-Tab for snippet navigation
+      vim.keymap.set({ "i", "s" }, "<Tab>", function()
+        if luasnip.jumpable(1) then
+          luasnip.jump(1)
+        else
+          return "<Tab>"
+        end
+      end, { silent = true, expr = true })
+
+      vim.keymap.set({ "i", "s" }, "<S-Tab>", function()
+        if luasnip.jumpable(-1) then
+          luasnip.jump(-1)
+        else
+          return "<S-Tab>"
+        end
+      end, { silent = true, expr = true })
+    end,
+  },
   {
     "folke/snacks.nvim",
     opts = function(_, opts)
@@ -126,7 +167,6 @@ return {
       },
     },
   },
-  -- none-ls configuration moved to lua/plugins/none-ls.lua to avoid duplication
   {
     "akinsho/toggleterm.nvim",
     opts = {
