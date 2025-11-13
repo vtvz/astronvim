@@ -1,9 +1,32 @@
+local utils = require("user.utils")
+
 local function current_picker_text()
   local prompts = require("telescope.state").get_existing_prompt_bufnrs()
   if #prompts == 1 then
     local current_picker = require("telescope.actions.state").get_current_picker(prompts[1])
     return current_picker:_get_prompt()
   end
+end
+
+local function copy_claude_code_file_ref()
+  local function ref()
+    local file = vim.fn.expand("%:.")
+
+    local mode = vim.api.nvim_get_mode().mode
+    if mode == "v" or mode == "V" then
+      local start, finish = utils.get_visual_range()
+
+      return "@" .. file .. ":" .. start .. "-" .. finish
+    end
+
+    return "@" .. file
+  end
+
+  local file = ref()
+
+  vim.fn.setreg("+", file)
+
+  utils.notify("Coplied file ref. You can use it in Claude Code")
 end
 
 -- https://github.com/nvim-telescope/telescope.nvim/pull/2333/files#diff-28bcf3ba7abec8e505297db6ed632962cbbec357328d4e0f6c6eca4fac1c0c48R170
@@ -116,6 +139,9 @@ return {
     },
     ["<Leader>vyx"] = {
       require("git_srcr").yank,
+    },
+    ["<Leader>vyc"] = {
+      copy_claude_code_file_ref,
     },
     ["<Leader>vys"] = {
       function()
@@ -326,6 +352,9 @@ return {
     },
     ["<Leader>vys"] = {
       "<Cmd>Silicon<CR>",
+    },
+    ["<Leader>vyc"] = {
+      copy_claude_code_file_ref,
     },
     ["<Leader>vyf"] = {
       function()
