@@ -16,7 +16,11 @@ local function copy_claude_code_file_ref()
     if mode == "v" or mode == "V" then
       local start, finish = utils.get_visual_range()
 
-      return "@" .. file .. ":" .. start .. "-" .. finish
+      if start == finish then
+        return "@" .. file .. "#L" .. start
+      else
+        return "@" .. file .. "#L" .. start .. "-" .. finish
+      end
     end
 
     return "@" .. file
