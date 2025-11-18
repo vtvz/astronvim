@@ -1,65 +1,99 @@
-local null_ls = require("null-ls")
+local headers = {
+  table.concat({
+    "░▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░",
+    "░▒▓█▓▒░░▒▓█▓▒░  ░▒▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░",
+    " ░▒▓█▓▒▒▓█▓▒░   ░▒▓█▓▒░    ░▒▓█▓▒▒▓█▓▒░     ░▒▓██▓▒░ ",
+    " ░▒▓█▓▒▒▓█▓▒░   ░▒▓█▓▒░    ░▒▓█▓▒▒▓█▓▒░   ░▒▓██▓▒░   ",
+    "  ░▒▓█▓▓█▓▒░    ░▒▓█▓▒░     ░▒▓█▓▓█▓▒░  ░▒▓██▓▒░     ",
+    "  ░▒▓█▓▓█▓▒░    ░▒▓█▓▒░     ░▒▓█▓▓█▓▒░ ░▒▓█▓▒░       ",
+    "   ░▒▓██▓▒░     ░▒▓█▓▒░      ░▒▓██▓▒░  ░▒▓████████▓▒░",
+  }, "\n"),
+
+  table.concat({
+    "╔═══════════════════════════════════════╗",
+    "║                                       ║",
+    "║  ██╗   ██╗████████╗██╗   ██╗███████╗  ║",
+    "║  ██║   ██║╚══██╔══╝██║   ██║╚══███╔╝  ║",
+    "║  ██║   ██║   ██║   ██║   ██║  ███╔╝   ║",
+    "║  ╚██╗ ██╔╝   ██║   ╚██╗ ██╔╝ ███╔╝    ║",
+    "║   ╚████╔╝    ██║    ╚████╔╝ ███████╗  ║",
+    "║    ╚═══╝     ╚═╝     ╚═══╝  ╚══════╝  ║",
+    "║                                       ║",
+    "╚═══════════════════════════════════════╝",
+  }, "\n"),
+}
 
 return {
   {
-    "goolord/alpha-nvim",
-    opts = function(_, opts) -- override the options using lazy.nvim
-      opts.section.header.val = { -- change the header section value
-        "╔═══════════════════════════════════════╗",
-        "║                                       ║",
-        "║  ██╗   ██╗████████╗██╗   ██╗███████╗  ║",
-        "║  ██║   ██║╚══██╔══╝██║   ██║╚══███╔╝  ║",
-        "║  ██║   ██║   ██║   ██║   ██║  ███╔╝   ║",
-        "║  ╚██╗ ██╔╝   ██║   ╚██╗ ██╔╝ ███╔╝    ║",
-        "║   ╚████╔╝    ██║    ╚████╔╝ ███████╗  ║",
-        "║    ╚═══╝     ╚═╝     ╚═══╝  ╚══════╝  ║",
-        "║                                       ║",
-        "╚═══════════════════════════════════════╝",
-      }
-    end,
-  },
-  {
-    "nvim-treesitter/playground",
-    cmd = {
-      "TSPlaygroundToggle",
-      "TSCaptureUnderCursor",
-      "TSHighlightCapturesUnderCursor",
+    "folke/snacks.nvim",
+    opts = {
+      dashboard = {
+        preset = {
+          header = headers[2],
+        },
+      },
     },
   },
   {
-    -- override nvim-autopairs plugin
-    "hrsh7th/nvim-cmp",
+    "saghen/blink.cmp",
     dependencies = {
-      -- add cmp source as dependency of cmp
-      "hrsh7th/cmp-nvim-lua",
-      "hrsh7th/cmp-nvim-lsp-signature-help",
-      -- add cmp source as dependency of cmp
+      "L3MON4D3/LuaSnip",
+      { "saghen/blink-cmp-luasnip", optional = true },
     },
-    -- override the options table that is used in the `require("cmp").setup()` call
     opts = function(_, opts)
-      -- opts parameter is the default options table
-      -- the function is lazy loaded so cmp is able to be required
-      local cmp = require("cmp")
-      -- modify the sources part of the options table
-      opts.sources = cmp.config.sources({
-        { name = "nvim_lsp", priority = 1000 },
-        { name = "luasnip", priority = 750 },
-        { name = "buffer", priority = 500 },
-        { name = "path", priority = 250 },
-        { name = "nvim_lua", priority = 700 }, -- add new source
-        { name = "nvim_lsp_signature_help", priority = 700 }, -- add new source
-      })
+      -- Remove Tab from completion to avoid collision with snippet navigation
+      -- Only use Ctrl+n/Ctrl+p for completion navigation
+      opts.keymap = opts.keymap or {}
+      opts.keymap.preset = "default"
+      opts.keymap["<Tab>"] = {}
+      opts.keymap["<S-Tab>"] = {}
 
-      -- return the new table to be used
       return opts
     end,
   },
   {
-    "rcarriga/nvim-notify",
-    event = "UIEnter",
-    config = function(plugin, opts)
-      require("astronvim.plugins.configs.notify")(plugin, opts)
+    "L3MON4D3/LuaSnip",
+    config = function(...)
+      require("astronvim.plugins.configs.luasnip")(...)
 
+      local luasnip = require("luasnip")
+      luasnip.filetype_extend("javascript", { "javascriptreact" })
+
+      -- require("luasnip.loaders.from_vscode").lazy_load({
+      --   paths = { vim.fn.stdpath("config") .. "/snippets" },
+      -- })
+
+      require("luasnip.loaders.from_snipmate").lazy_load({
+        paths = { vim.fn.stdpath("config") .. "/snipmate" },
+      })
+
+      -- Setup Tab/Shift-Tab for snippet navigation
+      vim.keymap.set({ "i", "s" }, "<Tab>", function()
+        if luasnip.jumpable(1) then
+          luasnip.jump(1)
+        else
+          return "<Tab>"
+        end
+      end, { silent = true, expr = true })
+
+      vim.keymap.set({ "i", "s" }, "<S-Tab>", function()
+        if luasnip.jumpable(-1) then
+          luasnip.jump(-1)
+        else
+          return "<S-Tab>"
+        end
+      end, { silent = true, expr = true })
+    end,
+  },
+  {
+    "folke/snacks.nvim",
+    opts = function(_, opts)
+      -- Merge with existing snacks config if any
+      opts = opts or {}
+      opts.notifier = opts.notifier or {}
+
+      -- Setup notification filtering
+      local original_notify = vim.notify
       local banned_messages = {
         "Accessing client.resolved_capabilities is deprecated",
         "Client %d+ quit with exit code %d+ and signal %d+",
@@ -68,9 +102,7 @@ return {
         "rust.analyzer: .32802: server cancelled the request",
       }
 
-      local original_notify = vim.notify
-
-      local filtered_notify = function(msg, ...)
+      vim.notify = function(msg, ...)
         if type(msg) == "string" then
           for _, banned in ipairs(banned_messages) do
             if string.match(msg, banned) then
@@ -79,11 +111,10 @@ return {
             end
           end
         end
-
         original_notify(msg, ...)
       end
 
-      vim.notify = filtered_notify
+      return opts
     end,
   },
   {
@@ -129,46 +160,10 @@ return {
     },
   },
   {
-    "nvimtools/none-ls.nvim",
-    opts = function(plugin, opts) -- overrides `require("null-ls").setup(config)`
-      -- config variable is the default configuration table for the setup functino call
-
-      -- Check supported formatters and linters
-      -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/formatting
-      -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/diagnostics
-
-      opts.sources = {
-        require("user.groovy_formatter").setup(),
-        -- require("null-ls").builtins.diagnostics.tfsec,
-        null_ls.builtins.formatting.shfmt.with({
-          extra_args = { "-i", "2" },
-        }),
-      }
-      -- set up null-ls's on_attach function
-      -- NOTE: You can remove this on attach function to disable format on save
-
-      opts.on_attach = require("user.groovy_formatter").on_attach(opts.on_attach)
-
-      return opts
-    end,
-  },
-  {
     "akinsho/toggleterm.nvim",
     opts = {
       direction = "float",
       -- open_mapping = [[<c-'>]],
     },
   },
-  {
-    "stevearc/dressing.nvim",
-    opts = {
-      select = { backend = { "builtin" } },
-    },
-  },
-  --[[
-  {
-    "AstroNvim/astrocommunity",
-    { import = "astrocommunity.motion.harpoon" },
-  },
-  ]]
 }

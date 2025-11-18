@@ -1,7 +1,7 @@
 vim.filetype.add({
   extension = {
     --   tf = "terraform",
-    tfvars = "terraform",
+    -- tfvars = "terraform",
   },
   pattern = {
     [".*/Dockerfile.*"] = "dockerfile",
@@ -16,26 +16,28 @@ vim.api.nvim_create_user_command("JenkinsValidate", function()
   require("jenkinsfile_linter").validate()
 end, { desc = "Validate Jenkinsfile" })
 
-vim.api.nvim_cmd({ cmd = "highlight", args = { "NeoTreeGitIgnored", "guifg=#67859e" } }, {})
+-- vim.api.nvim_cmd({ cmd = "highlight", args = { "NeoTreeGitIgnored", "guifg=#67859e" } }, {})
+
+local messages_bufnr
 
 vim.api.nvim_create_user_command("Messages", function()
-  local messages_output = vim.api.nvim_exec(":messages", true)
+  local messages_output = vim.api.nvim_exec2(":messages", { output = true }).output
 
-  if MESSAGES_BUFNR ~= nil and vim.fn.buflisted(MESSAGES_BUFNR) == 0 then
-    MESSAGES_BUFNR = nil
+  if messages_bufnr ~= nil and vim.fn.buflisted(messages_bufnr) == 0 then
+    messages_bufnr = nil
   end
 
-  if not MESSAGES_BUFNR then
-    MESSAGES_BUFNR = vim.api.nvim_create_buf(true, true)
-    vim.api.nvim_buf_set_option(MESSAGES_BUFNR, "buftype", "nofile")
-    vim.api.nvim_buf_set_name(MESSAGES_BUFNR, ":messages")
+  if not messages_bufnr then
+    messages_bufnr = vim.api.nvim_create_buf(true, true)
+    vim.bo[messages_bufnr].buftype = "nofile"
+    vim.api.nvim_buf_set_name(messages_bufnr, ":messages")
   end
 
-  vim.api.nvim_buf_set_option(MESSAGES_BUFNR, "modifiable", true)
-  vim.api.nvim_buf_set_lines(MESSAGES_BUFNR, 0, -1, true, vim.split(messages_output, "\n"))
-  vim.api.nvim_buf_set_option(MESSAGES_BUFNR, "modifiable", false)
+  vim.bo[messages_bufnr].modifiable = true
+  vim.api.nvim_buf_set_lines(messages_bufnr, 0, -1, true, vim.split(messages_output, "\n"))
+  vim.bo[messages_bufnr].modifiable = false
 
-  vim.api.nvim_set_current_buf(MESSAGES_BUFNR)
+  vim.api.nvim_set_current_buf(messages_bufnr)
   vim.api.nvim_win_set_cursor(0, { vim.api.nvim_buf_line_count(0), 0 })
 end, { desc = "Show messages in a buffer" })
 
@@ -68,7 +70,7 @@ vim.api.nvim_create_autocmd("ExitPre", {
       require("toggleterm").toggle(terminals[1].id)
 
       require("toggleterm.terminal").get(terminals[1].id):set_mode("i")
-      vim.api.nvim_err_writeln("There are opened terminal sessions: " .. #terminals)
+      vim.notify("There are opened terminal sessions: " .. #terminals, vim.log.levels.ERROR)
     end
   end,
 })
@@ -79,11 +81,10 @@ vim.api.nvim_create_autocmd("BufAdd", {
   callback = function()
     local buf = tonumber(vim.fn.expand("<abuf>"))
 
-    vim.api.nvim_set_option_value("keymap", "russian-jcukenwin", { buf = buf })
-    vim.api.nvim_set_option_value("iminsert", 0, { buf = buf })
-    vim.api.nvim_set_option_value("imsearch", -1, { buf = buf })
-
-    vim.api.nvim_set_option_value("spelloptions", "camel", { buf = buf })
+    vim.bo[buf].keymap = "russian-jcukenwin"
+    vim.bo[buf].iminsert = 0
+    vim.bo[buf].imsearch = -1
+    vim.bo[buf].spelloptions = "camel"
   end,
 })
 
@@ -111,7 +112,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   group = au,
   callback = function()
     local buffer = tonumber(vim.fn.expand("<abuf>"))
-    local ft = vim.api.nvim_get_option_value("filetype", { buf = buffer })
+    local ft = vim.bo[buffer].filetype
 
     if ft == "qf" then
       vim.keymap.set(

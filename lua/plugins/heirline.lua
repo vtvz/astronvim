@@ -7,8 +7,14 @@ return {
       opts.statusline = {
         hl = { fg = "fg", bg = "bg" },
         status.component.mode({
-          hl = { bold = true },
-          mode_text = { padding = { left = 1, right = 1 } },
+          mode_text = {
+            padding = { left = 1, right = 1 },
+          },
+          -- Ensure proper contrast with bold text
+          hl = function(self)
+            local mode = self.mode
+            return { fg = "bg", bg = mode, bold = true }
+          end,
         }),
         status.component.git_branch(),
         -- TODO: REMOVE THIS WITH v3
