@@ -59,7 +59,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 vim.api.nvim_create_autocmd("ExitPre", {
-  desc = "Prevent closing if there is opened teminals",
+  desc = "Prevent closing if there are opened terminals",
   pattern = "*",
   callback = function()
     local terminals = require("toggleterm.terminal").get_all()
