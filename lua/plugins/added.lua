@@ -32,9 +32,6 @@ return {
     "kylechui/nvim-surround",
     event = "VeryLazy",
     opts = {},
-    config = function(_, opts)
-      require("nvim-surround").setup(opts)
-    end,
   },
   {
     "nicwest/vim-camelsnek",
@@ -63,17 +60,11 @@ return {
         },
       },
     },
-    config = function(_, opts)
-      require("spectre").setup(opts)
-    end,
   },
   {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     event = "VeryLazy",
-    config = function(_, opts)
-      require("todo-comments").setup(opts)
-    end,
   },
   {
     "ckipp01/nvim-jenkinsfile-linter",
@@ -83,21 +74,19 @@ return {
     "michaelrommel/nvim-silicon",
     lazy = true,
     cmd = "Silicon",
-    config = function()
-      require("nvim-silicon").setup({
-        font = "FiraCode Nerd Font Mono",
-        to_clipboard = true,
-        no_window_controls = true,
-        line_offset = function(args)
-          return args.line1
-        end,
-        pad_horiz = 10,
-        pad_vert = 10,
-        window_title = function()
-          return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()), ":.")
-        end,
-      })
-    end,
+    opts = {
+      font = "FiraCode Nerd Font Mono",
+      to_clipboard = true,
+      no_window_controls = true,
+      line_offset = function(args)
+        return args.line1
+      end,
+      pad_horiz = 10,
+      pad_vert = 10,
+      window_title = function()
+        return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()), ":.")
+      end,
+    },
   },
   {
     "wellle/targets.vim",

@@ -16,8 +16,6 @@ vim.api.nvim_create_user_command("JenkinsValidate", function()
   require("jenkinsfile_linter").validate()
 end, { desc = "Validate Jenkinsfile" })
 
--- vim.api.nvim_cmd({ cmd = "highlight", args = { "NeoTreeGitIgnored", "guifg=#67859e" } }, {})
-
 local messages_bufnr
 
 vim.api.nvim_create_user_command("Messages", function()
@@ -44,7 +42,7 @@ end, { desc = "Show messages in a buffer" })
 local au = vim.api.nvim_create_augroup("vtvz_test", { clear = true })
 
 vim.api.nvim_create_autocmd("BufWritePre", {
-  desc = "Trailing spaces",
+  desc = "Remove trailing spaces",
   group = au,
   callback = function()
     local Path = require("plenary.path")
@@ -61,6 +59,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 vim.api.nvim_create_autocmd("ExitPre", {
+  desc = "Prevent closing if there is opened teminals",
   pattern = "*",
   callback = function()
     local terminals = require("toggleterm.terminal").get_all()
@@ -75,7 +74,7 @@ vim.api.nvim_create_autocmd("ExitPre", {
   end,
 })
 
-vim.api.nvim_create_autocmd("BufAdd", {
+--[[ vim.api.nvim_create_autocmd("BufAdd", {
   desc = "Add Russian Layout",
   group = au,
   callback = function()
@@ -87,6 +86,7 @@ vim.api.nvim_create_autocmd("BufAdd", {
     vim.bo[buf].spelloptions = "camel"
   end,
 })
+]]
 
 vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
   desc = "Add title",
@@ -100,7 +100,10 @@ vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
   end,
 })
 
+-- Force statuscolumn to refresh when switching buffers
+-- The reassignment triggers a redraw, ensuring the statuscolumn updates properly
 vim.api.nvim_create_autocmd({ "BufLeave", "BufEnter" }, {
+  desc = "Refresh statuscolumn on buffer switch",
   group = au,
   callback = function()
     vim.o.statuscolumn = vim.o.statuscolumn
