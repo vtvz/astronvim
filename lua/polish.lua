@@ -39,7 +39,7 @@ vim.api.nvim_create_user_command("Messages", function()
   vim.api.nvim_win_set_cursor(0, { vim.api.nvim_buf_line_count(0), 0 })
 end, { desc = "Show messages in a buffer" })
 
-local au = vim.api.nvim_create_augroup("vtvz_test", { clear = true })
+local au = vim.api.nvim_create_augroup("vtvz", { clear = true })
 
 vim.api.nvim_create_autocmd("BufWritePre", {
   desc = "Remove trailing spaces",
