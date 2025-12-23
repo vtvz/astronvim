@@ -45,7 +45,7 @@ function M.open_doc(_)
   end
 
   local url = string.format(
-    "https://registry.terraform.io/providers/hashicorp/%s/latest/docs/%s/%s#%s",
+    "https://registry.terraform.io/providers/hashicorp/%s/latest/docs/%s/%s#%s-1",
     provider,
     type_url,
     resource,
