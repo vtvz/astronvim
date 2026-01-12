@@ -44,8 +44,12 @@ function M.open_doc(_)
     type_url = "data-sources"
   end
 
+  if attribute ~= "" then
+    attribute = string.format("#%s-1", attribute)
+  end
+
   local url = string.format(
-    "https://registry.terraform.io/providers/hashicorp/%s/latest/docs/%s/%s#%s-1",
+    "https://registry.terraform.io/providers/hashicorp/%s/latest/docs/%s/%s%s",
     provider,
     type_url,
     resource,
