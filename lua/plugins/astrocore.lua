@@ -29,6 +29,27 @@ return {
       },
     },
 
+    -- Treesitter configuration (v6: moved from nvim-treesitter opts to AstroCore)
+    treesitter = {
+      ensure_installed = {
+        "go",
+        "hcl",
+        "html",
+        "javascript",
+        "json",
+        -- "just",
+        "lua",
+        "python",
+        "query",
+        "rust",
+        "terraform",
+        "toml",
+        "tsx",
+        "typescript",
+        "yaml",
+      },
+    },
+
     -- Mappings can be configured through AstroCore as well.
     -- NOTE: keycodes follow the casing in the vimdocs. For example, `<Leader>` must be capitalized
     mappings = require("user.mappings"),

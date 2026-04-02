@@ -115,6 +115,8 @@ return {
       n = {
         ["<leader>lg"] = {
           function()
+            -- Snacks.picker.lsp_workspace_symbols()
+
             require("telescope.builtin").lsp_dynamic_workspace_symbols()
           end,
           desc = "Search workspace symbols",

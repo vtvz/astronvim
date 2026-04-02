@@ -120,23 +120,6 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
-      ensure_installed = {
-        "go",
-        "hcl",
-        "html",
-        "javascript",
-        "json",
-        -- "just",
-        "lua",
-        "python",
-        "query",
-        "rust",
-        "terraform",
-        "toml",
-        "tsx",
-        "typescript",
-        "yaml",
-      },
       playground = {
         enable = true,
         disable = {},
