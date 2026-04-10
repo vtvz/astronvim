@@ -1,5 +1,3 @@
-local parsers = require("nvim-treesitter.parsers")
-
 local M = {
   supported = {
     hcl = function()
@@ -20,28 +18,28 @@ local M = {
 function M.open(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
 
-  local lang = parsers.get_buf_lang(bufnr)
+  local lang = vim.treesitter.language.get_lang(vim.bo[bufnr].filetype)
 
   local supported = M.supported[lang]
 
   if supported then
     supported().open_doc(bufnr)
   else
-    M.warn("Language '" .. lang .. "' is not supported")
+    M.warn("Language '" .. (lang or "unknown") .. "' is not supported")
   end
 end
 
 function M.copy_ref(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
 
-  local lang = parsers.get_buf_lang(bufnr)
+  local lang = vim.treesitter.language.get_lang(vim.bo[bufnr].filetype)
 
   local supported = M.supported[lang]
 
   if supported then
     supported().copy_ref(bufnr)
   else
-    M.warn("Language '" .. lang .. "' is not supported")
+    M.warn("Language '" .. (lang or "unknown") .. "' is not supported")
   end
 end
 
