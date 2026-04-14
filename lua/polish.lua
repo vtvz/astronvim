@@ -61,6 +61,15 @@ vim.cmd = setmetatable({}, {
 
 local au = vim.api.nvim_create_augroup("vtvz", { clear = true })
 
+vim.api.nvim_create_autocmd("BufRead", {
+  desc = "Disable swap for node_modules",
+  group = au,
+  pattern = "*/node_modules/*",
+  callback = function()
+    vim.bo.swapfile = false
+  end,
+})
+
 vim.api.nvim_create_autocmd("BufWritePre", {
   desc = "Remove trailing spaces",
   group = au,
