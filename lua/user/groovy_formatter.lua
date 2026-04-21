@@ -19,8 +19,7 @@ function M._setup_timer()
         return
       end
 
-      local items = vim.lsp.util.get_progress_messages()
-      if #items > 0 then
+      if vim.lsp.status() ~= "" then
         return
       end
 
@@ -91,17 +90,16 @@ function M.on_attach(on_attach)
       local autocmd_group = "vtvz_auto_format_" .. attach_bufnr
       vim.api.nvim_create_augroup(autocmd_group, { clear = true })
 
-      vim.api.nvim_create_autocmd("BufWritePre", {
+      vim.api.nvim_create_autocmd("BufWriteCmd", {
         desc = "Auto format before save",
         group = autocmd_group,
         buffer = attach_bufnr,
         callback = function(args)
           local bufnr = args.buf
-          if vim.b[bufnr].autoformat_enabled == nil then
-            vim.b[bufnr].autoformat_enabled = true
-          end
-
-          if not require("user.utils").do_autoformat_buffer(bufnr) then
+          if vim.b[bufnr].groovy_autoformat == false then
+            vim.api.nvim_buf_call(bufnr, function()
+              vim.api.nvim_cmd({ cmd = "write", mods = { noautocmd = true } }, {})
+            end)
             return
           end
 
