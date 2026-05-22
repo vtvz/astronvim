@@ -50,7 +50,7 @@ return {
     cmd = {
       "Spectre",
     },
-    dependencies = { "nvim-lua/plenary.nvim", "echasnovski/mini.icons" },
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-mini/mini.icons" },
     opts = {
       -- open_cmd = "enew",
       color_devicons = false,

@@ -39,7 +39,36 @@ vim.api.nvim_create_user_command("Messages", function()
   vim.api.nvim_win_set_cursor(0, { vim.api.nvim_buf_line_count(0), 0 })
 end, { desc = "Show messages in a buffer" })
 
+-- Workaround: astrocore schedules `normal! zx` to refresh folds after treesitter
+-- attaches, but if we're in terminal mode at that point it errors. Patch vim.cmd
+-- to silently skip that specific command when in terminal mode.
+-- TODO: Try to remove after upgrade
+local _vim_cmd = vim.cmd
+vim.cmd = setmetatable({}, {
+  __index = _vim_cmd,
+  __newindex = function(_, k, v)
+    _vim_cmd[k] = v
+  end,
+  __call = function(_, ...)
+    local args = { ... }
+    local cmd = type(args[1]) == "string" and args[1] or ""
+    if cmd == "normal! zx" and vim.api.nvim_get_mode().mode == "t" then
+      return
+    end
+    return _vim_cmd(...)
+  end,
+})
+
 local au = vim.api.nvim_create_augroup("vtvz", { clear = true })
+
+vim.api.nvim_create_autocmd("BufRead", {
+  desc = "Disable swap for node_modules",
+  group = au,
+  pattern = "*/node_modules/*",
+  callback = function()
+    vim.bo.swapfile = false
+  end,
+})
 
 vim.api.nvim_create_autocmd("BufWritePre", {
   desc = "Remove trailing spaces",
