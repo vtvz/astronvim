@@ -444,7 +444,17 @@ return {
     ["<M-w>"] = { ":normal van<cr>", desc = "Init treesitter node selection" },
   },
   x = {
-    ["<M-w>"] = { function() vim.api.nvim_feedkeys("an", "v", false) end, desc = "Expand treesitter node" },
-    ["<M-C-w>"] = { function() vim.api.nvim_feedkeys("in", "v", false) end, desc = "Shrink treesitter node" },
+    ["<M-w>"] = {
+      function()
+        vim.api.nvim_feedkeys("an", "v", false)
+      end,
+      desc = "Expand treesitter node",
+    },
+    ["<M-C-w>"] = {
+      function()
+        vim.api.nvim_feedkeys("in", "v", false)
+      end,
+      desc = "Shrink treesitter node",
+    },
   },
 }
