@@ -399,6 +399,12 @@ return {
       end,
       desc = "Toggle autoformatting (global)",
     },
+    ["<Leader>ux"] = {
+      function()
+        require("user.lsp_toggle").toggle_picker()
+      end,
+      desc = "Toggle LSP server",
+    },
     ["gr"] = {
       function()
         require("telescope.builtin").lsp_references()
