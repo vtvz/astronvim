@@ -85,8 +85,25 @@ local function switch_terminal(direction)
   end
 end
 
+local function clear_terminal_scrollback()
+  if vim.bo.buftype ~= "terminal" then
+    return
+  end
+
+  local scrollback = vim.bo.scrollback
+  vim.bo.scrollback = 1
+  vim.api.nvim_chan_send(vim.bo.channel, "clear\r")
+  vim.defer_fn(function()
+    vim.bo.scrollback = scrollback
+  end, 50)
+end
+
 return {
   t = {
+    ["<C-\\><C-k>"] = {
+      clear_terminal_scrollback,
+      desc = "Clear terminal scrollback",
+    },
     ["<C-\\><C-{>"] = {
       switch_terminal("prev"),
       desc = "Switch to previous terminal",
@@ -168,6 +185,10 @@ return {
     },
   },
   n = {
+    ["<C-\\><C-k>"] = {
+      clear_terminal_scrollback,
+      desc = "Clear terminal scrollback",
+    },
     ["<C-\\><C-{>"] = {
       switch_terminal("prev"),
       desc = "Switch to previous terminal",

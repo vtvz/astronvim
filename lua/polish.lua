@@ -70,6 +70,19 @@ vim.api.nvim_create_autocmd("BufRead", {
   end,
 })
 
+vim.api.nvim_create_autocmd("User", {
+  desc = "Enable wrap in claudecode.nvim diff panels",
+  group = au,
+  pattern = "ClaudeCodeDiffOpened",
+  callback = function(args)
+    for _, win in ipairs({ args.data.diff_window, args.data.target_window }) do
+      if win and vim.api.nvim_win_is_valid(win) then
+        vim.wo[win].wrap = true
+      end
+    end
+  end,
+})
+
 vim.api.nvim_create_autocmd("BufWritePre", {
   desc = "Remove trailing spaces",
   group = au,

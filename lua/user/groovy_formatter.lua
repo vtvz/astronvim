@@ -81,7 +81,9 @@ end
 function M.on_attach(on_attach)
   return function(client, attach_bufnr)
     if not vim.tbl_contains(M.filetypes, vim.bo[attach_bufnr].filetype) then
-      on_attach(client, attach_bufnr)
+      if on_attach then
+        on_attach(client, attach_bufnr)
+      end
       return
     end
 
